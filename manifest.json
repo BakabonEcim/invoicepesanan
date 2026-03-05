@@ -1,0 +1,10 @@
+{
+  "name": "Sistem Pesanan Restoran",
+  "short_name": "Resto Order",
+  "description": "Aplikasi offline untuk mengelola menu, pesanan, dan invoice restoran",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8f9fa",
+  "theme_color": "#2c3e50"
+}
