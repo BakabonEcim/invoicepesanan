@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* (Semua style tetap sama seperti sebelumnya, tidak ada perubahan) */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -1209,6 +1210,11 @@ Es Teh Manis,8000</pre>
             <h2 style="margin-bottom: 20px; color: #2c3e50;">Reservasi Aktif (<span id="activeReservationCount">0</span>)</h2>
             <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 0.9rem;">Reservasi untuk hari ini dan masa depan</p>
             
+            <!-- NEW: Search box for active reservations -->
+            <div class="form-group">
+                <input type="text" id="searchActiveReservations" class="form-control" placeholder="Cari berdasarkan nama...">
+            </div>
+            
             <div id="activeReservationsContainer">
                 <!-- Active reservations will be loaded here -->
             </div>
@@ -1219,6 +1225,11 @@ Es Teh Manis,8000</pre>
             <h2 style="margin-bottom: 20px; color: #2c3e50;">Reservasi Lama (<span id="pastReservationCount">0</span>)</h2>
             <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 0.9rem;">Reservasi dengan tanggal yang sudah lewat</p>
             
+            <!-- NEW: Search box for past reservations -->
+            <div class="form-group">
+                <input type="text" id="searchPastReservations" class="form-control" placeholder="Cari berdasarkan nama...">
+            </div>
+            
             <div id="pastReservationsContainer">
                 <!-- Past reservations will be loaded here -->
             </div>
@@ -1228,6 +1239,11 @@ Es Teh Manis,8000</pre>
         <div id="list-takeaway" class="tab-content">
             <h2 style="margin-bottom: 20px; color: #2c3e50;">List Pesanan Takeaway (<span id="takeawayListCount">0</span>)</h2>
             <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 0.9rem;">Pesanan takeaway berdasarkan waktu pesanan disimpan</p>
+            
+            <!-- NEW: Search box for takeaway list -->
+            <div class="form-group">
+                <input type="text" id="searchTakeaway" class="form-control" placeholder="Cari berdasarkan nama...">
+            </div>
             
             <div id="takeawayListContainer">
                 <!-- Takeaway list will be loaded here -->
@@ -1374,7 +1390,7 @@ Es Teh Manis,8000</pre>
     </div>
 
     <script>
-      const firebaseConfig = {
+     const firebaseConfig = {
 
   apiKey: "AIzaSyDyVwsEo3QuL0RfnCDhBdUw5Fp3VgJiy6c",
 
@@ -1390,7 +1406,6 @@ Es Teh Manis,8000</pre>
 
 };
 
-        
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -1875,6 +1890,11 @@ Es Teh Manis,8000</pre>
                     autocompleteListTakeaway.style.display = 'none';
                 }
             });
+            
+            // NEW: Event listeners for search boxes
+            document.getElementById('searchActiveReservations')?.addEventListener('input', loadReservations);
+            document.getElementById('searchPastReservations')?.addEventListener('input', loadReservations);
+            document.getElementById('searchTakeaway')?.addEventListener('input', loadTakeawayList);
             
             // Show welcome message
             setTimeout(() => {
@@ -2840,15 +2860,27 @@ Es Teh Manis,8000</pre>
             document.body.removeChild(textArea);
         }
         
-        // Function to load and display reservations from Firebase
+        // Function to load and display reservations from Firebase (with search filter)
         function loadReservations() {
             const today = new Date().toISOString().split('T')[0];
             const activeContainer = document.getElementById('activeReservationsContainer');
             const pastContainer = document.getElementById('pastReservationsContainer');
             
-            // Filter reservations
-            const activeReservations = reservations.filter(r => r.reservationDate >= today);
-            const pastReservations = reservations.filter(r => r.reservationDate < today);
+            // NEW: Get search values
+            const searchActive = document.getElementById('searchActiveReservations')?.value.toLowerCase() || '';
+            const searchPast = document.getElementById('searchPastReservations')?.value.toLowerCase() || '';
+            
+            // Filter by date
+            let activeReservations = reservations.filter(r => r.reservationDate >= today);
+            let pastReservations = reservations.filter(r => r.reservationDate < today);
+            
+            // NEW: Apply search filter
+            if (searchActive) {
+                activeReservations = activeReservations.filter(r => r.customerName.toLowerCase().includes(searchActive));
+            }
+            if (searchPast) {
+                pastReservations = pastReservations.filter(r => r.customerName.toLowerCase().includes(searchPast));
+            }
             
             // Sort reservations by date
             const sortedActiveReservations = [...activeReservations].sort((a, b) => 
@@ -2864,8 +2896,8 @@ Es Teh Manis,8000</pre>
                 activeContainer.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-calendar-alt"></i>
-                        <h3>Belum ada reservasi aktif di Firebase</h3>
-                        <p>Pesanan yang disimpan untuk hari ini dan masa depan akan muncul di sini</p>
+                        <h3>${searchActive ? 'Tidak ada hasil pencarian' : 'Belum ada reservasi aktif di Firebase'}</h3>
+                        <p>${searchActive ? 'Coba kata kunci lain' : 'Pesanan yang disimpan untuk hari ini dan masa depan akan muncul di sini'}</p>
                     </div>
                 `;
             } else {
@@ -2901,8 +2933,8 @@ Es Teh Manis,8000</pre>
                 pastContainer.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-history"></i>
-                        <h3>Belum ada reservasi lama di Firebase</h3>
-                        <p>Reservasi dengan tanggal yang sudah lewat akan muncul di sini</p>
+                        <h3>${searchPast ? 'Tidak ada hasil pencarian' : 'Belum ada reservasi lama di Firebase'}</h3>
+                        <p>${searchPast ? 'Coba kata kunci lain' : 'Reservasi dengan tanggal yang sudah lewat akan muncul di sini'}</p>
                     </div>
                 `;
             } else {
@@ -2930,7 +2962,7 @@ Es Teh Manis,8000</pre>
                 `).join('');
             }
             
-            // Update counts
+            // Update counts (original, not filtered)
             updateReservationCounts();
         }
         
@@ -3476,25 +3508,34 @@ Es Teh Manis,8000</pre>
             updateTakeawayActionButtons();
         }
         
-        // Function to load and display takeaway list from Firebase
+        // Function to load and display takeaway list from Firebase (with search filter)
         function loadTakeawayList() {
             const container = document.getElementById('takeawayListContainer');
             
-            if (takeawayOrders.length === 0) {
+            // NEW: Get search value
+            const search = document.getElementById('searchTakeaway')?.value.toLowerCase() || '';
+            
+            // Filter by search
+            let filtered = takeawayOrders;
+            if (search) {
+                filtered = filtered.filter(o => o.customerName.toLowerCase().includes(search));
+            }
+            
+            // Sort takeaway orders by date (newest first)
+            const sortedTakeawayOrders = [...filtered].sort((a, b) => 
+                new Date(b.orderDate) - new Date(a.orderDate)
+            );
+            
+            if (sortedTakeawayOrders.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-shopping-bag"></i>
-                        <h3>Belum ada pesanan takeaway di Firebase</h3>
-                        <p>Pesanan takeaway yang disimpan akan muncul di sini</p>
+                        <h3>${search ? 'Tidak ada hasil pencarian' : 'Belum ada pesanan takeaway di Firebase'}</h3>
+                        <p>${search ? 'Coba kata kunci lain' : 'Pesanan takeaway yang disimpan akan muncul di sini'}</p>
                     </div>
                 `;
                 return;
             }
-            
-            // Sort takeaway orders by date (newest first)
-            const sortedTakeawayOrders = [...takeawayOrders].sort((a, b) => 
-                new Date(b.orderDate) - new Date(a.orderDate)
-            );
             
             container.innerHTML = sortedTakeawayOrders.map(order => {
                 const date = new Date(order.orderDate);
@@ -3531,7 +3572,7 @@ Es Teh Manis,8000</pre>
                 `;
             }).join('');
             
-            // Update count
+            // Update count (original, not filtered)
             updateTakeawayListCount();
         }
         
