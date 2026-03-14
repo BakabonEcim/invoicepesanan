@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Resto Order">
-    <meta name="description" content="Aplikasi online dengan Firebase untuk mengelola menu, pesanan, dan invoice restoran">
+    <meta name="description" content="Aplikasi online dengan Firebase untuk mengelola menu, kategori, pesanan, dan invoice restoran">
     <meta name="theme-color" content="#2c3e50">
     <meta name="mobile-web-app-capable" content="yes">
     
@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* (Semua style tetap sama seperti sebelumnya, tidak ada perubahan) */
+        /* Semua CSS sama seperti sebelumnya, ditambah beberapa style baru */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -390,9 +390,38 @@
             font-size: 1.1rem;
         }
         
+        .menu-categories {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 3px;
+        }
+        
+        .menu-categories span {
+            background-color: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        
         .menu-actions {
             display: flex;
             gap: 8px;
+        }
+        
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .category-name {
+            font-weight: bold;
+            color: #2c3e50;
         }
         
         .order-item {
@@ -832,6 +861,194 @@
             width: auto;
         }
         
+        /* Gaya untuk laporan harian */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .report-table th,
+        .report-table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .report-table th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .report-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .report-total {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: right;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+        
+        /* Card kategori di laporan */
+        .category-card {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .category-total {
+            font-size: 1rem;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        
+        .category-items {
+            margin-left: 20px;
+        }
+        
+        .category-item-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .category-item-name {
+            font-weight: 500;
+        }
+        
+        .category-item-qty {
+            font-weight: bold;
+        }
+        
+        /* Style untuk manajemen meja */
+        .table-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .table-number {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 60px;
+        }
+        
+        .table-area {
+            flex: 1;
+            margin: 0 10px;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .area-dropdown {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 150px;
+        }
+        
+        /* Grid meja */
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .table-card {
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        
+        .table-card.selected {
+            background-color: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+        
+        .table-card.occupied {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background-color: #e0e0e0;
+        }
+        
+        .table-card.available {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .table-card.area-non {
+            border-color: #3498db;
+        }
+        .table-card.area-smoking {
+            border-color: #e74c3c;
+        }
+        .table-card.area-tambahan {
+            border-color: #f39c12;
+        }
+        
+        .area-label {
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        .selected-tables {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        /* Info DP di kartu reservasi */
+        .dp-info {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #27ae60;
+        }
+        .dp-info i {
+            margin-right: 5px;
+        }
+        .dp-missing {
+            color: #e74c3c;
+            font-style: italic;
+        }
+        
+        /* Tombol pilih meja */
+        .select-table-btn {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
         @media (max-width: 600px) {
             .form-row {
                 flex-direction: column;
@@ -906,7 +1123,7 @@
     
     <div class="header">
         <h1><i class="fas fa-utensils"></i> Sistem Pesanan Restoran</h1>
-        <p>Aplikasi online dengan Firebase untuk mengelola menu, pesanan, dan invoice</p>
+        <p>Aplikasi online dengan Firebase untuk mengelola menu, kategori, pesanan, dan invoice</p>
         <div id="userInfo" class="user-info" style="display: none;">
             <i class="fas fa-user"></i>
             <span id="userEmail"></span>
@@ -972,6 +1189,14 @@
                 <i class="fas fa-book"></i>
                 <span>Data Master</span>
             </div>
+            <div class="tab" data-tab="categories">
+                <i class="fas fa-tags"></i>
+                <span>Kategori</span>
+            </div>
+            <div class="tab" data-tab="tables">
+                <i class="fas fa-chair"></i>
+                <span>Meja</span>
+            </div>
             <div class="tab" data-tab="order">
                 <i class="fas fa-plus-circle"></i>
                 <span>Buat Pesanan</span>
@@ -991,6 +1216,14 @@
             <div class="tab" data-tab="list-takeaway">
                 <i class="fas fa-list"></i>
                 <span>List Takeaway</span>
+            </div>
+            <div class="tab" data-tab="daily-report">
+                <i class="fas fa-chart-bar"></i>
+                <span>Laporan Harian</span>
+            </div>
+            <div class="tab" data-tab="check-tables">
+                <i class="fas fa-search"></i>
+                <span>Cek Meja</span>
             </div>
         </div>
         
@@ -1068,6 +1301,14 @@ Es Teh Manis,8000</pre>
                     <input type="number" id="menuPrice" class="form-control" placeholder="Contoh: 25000">
                 </div>
                 
+                <!-- Kategori -->
+                <div class="form-group">
+                    <label>Kategori (bisa pilih lebih dari satu):</label>
+                    <div id="menuCategoriesContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; padding: 10px;">
+                        <!-- Kategori akan di-load di sini sebagai checkbox -->
+                    </div>
+                </div>
+                
                 <button id="addMenuBtn" class="btn btn-success">
                     <i class="fas fa-plus"></i> Tambah Menu ke Firebase
                 </button>
@@ -1079,6 +1320,43 @@ Es Teh Manis,8000</pre>
                 <div id="menuItemsContainer">
                     <!-- Menu items will be loaded here -->
                 </div>
+            </div>
+        </div>
+        
+        <!-- Tab Kategori -->
+        <div id="categories" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">Manajemen Kategori</h2>
+            
+            <div class="form-group">
+                <label for="categoryName">Nama Kategori Baru:</label>
+                <input type="text" id="categoryName" class="form-control" placeholder="Contoh: Nasi Goreng">
+            </div>
+            
+            <button id="addCategoryBtn" class="btn btn-success">
+                <i class="fas fa-plus"></i> Tambah Kategori
+            </button>
+            
+            <h3 style="margin-top: 30px; margin-bottom: 15px; color: #2c3e50;">Daftar Kategori</h3>
+            <div id="categoriesListContainer">
+                <!-- Categories will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Tab Manajemen Meja -->
+        <div id="tables" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">Manajemen Meja</h2>
+            
+            <div class="btn-group" style="margin-bottom: 20px;">
+                <button id="addTableBtn" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Tambah Meja
+                </button>
+                <button id="importTableCsvBtn" class="btn btn-info">
+                    <i class="fas fa-file-import"></i> Import CSV
+                </button>
+            </div>
+            
+            <div id="tablesListContainer">
+                <!-- Tables will be loaded here -->
             </div>
         </div>
         
@@ -1095,6 +1373,15 @@ Es Teh Manis,8000</pre>
                 <div class="form-group">
                     <label for="reservationDate">Tanggal Reservasi:</label>
                     <input type="date" id="reservationDate" class="form-control">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button id="selectTableBtn" class="btn btn-info select-table-btn">
+                    <i class="fas fa-chair"></i> Pilih Meja
+                </button>
+                <div id="selectedTablesDisplay" class="selected-tables" style="display: none;">
+                    Meja terpilih: <span id="selectedTablesList"></span>
                 </div>
             </div>
             
@@ -1210,7 +1497,7 @@ Es Teh Manis,8000</pre>
             <h2 style="margin-bottom: 20px; color: #2c3e50;">Reservasi Aktif (<span id="activeReservationCount">0</span>)</h2>
             <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 0.9rem;">Reservasi untuk hari ini dan masa depan</p>
             
-            <!-- NEW: Search box for active reservations -->
+            <!-- Search box for active reservations -->
             <div class="form-group">
                 <input type="text" id="searchActiveReservations" class="form-control" placeholder="Cari berdasarkan nama...">
             </div>
@@ -1225,7 +1512,7 @@ Es Teh Manis,8000</pre>
             <h2 style="margin-bottom: 20px; color: #2c3e50;">Reservasi Lama (<span id="pastReservationCount">0</span>)</h2>
             <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 0.9rem;">Reservasi dengan tanggal yang sudah lewat</p>
             
-            <!-- NEW: Search box for past reservations -->
+            <!-- Search box for past reservations -->
             <div class="form-group">
                 <input type="text" id="searchPastReservations" class="form-control" placeholder="Cari berdasarkan nama...">
             </div>
@@ -1240,13 +1527,60 @@ Es Teh Manis,8000</pre>
             <h2 style="margin-bottom: 20px; color: #2c3e50;">List Pesanan Takeaway (<span id="takeawayListCount">0</span>)</h2>
             <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 0.9rem;">Pesanan takeaway berdasarkan waktu pesanan disimpan</p>
             
-            <!-- NEW: Search box for takeaway list -->
+            <!-- Search box for takeaway list -->
             <div class="form-group">
                 <input type="text" id="searchTakeaway" class="form-control" placeholder="Cari berdasarkan nama...">
             </div>
             
             <div id="takeawayListContainer">
                 <!-- Takeaway list will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Tab Laporan Harian -->
+        <div id="daily-report" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">Laporan Harian (Reservasi dengan DP)</h2>
+            <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 0.9rem;">Hanya menampilkan reservasi yang sudah membayar DP</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="reportDate">Pilih Tanggal:</label>
+                    <input type="date" id="reportDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="reportSort">Urutan Menu:</label>
+                    <select id="reportSort" class="form-control">
+                        <option value="most">Paling Banyak</option>
+                        <option value="least">Paling Sedikit</option>
+                        <option value="alpha">Alfabet (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button id="generateReportBtn" class="btn btn-success">
+                <i class="fas fa-chart-bar"></i> Tampilkan Laporan
+            </button>
+            
+            <div id="reportResult" style="margin-top: 30px;">
+                <!-- Report will be displayed here -->
+            </div>
+        </div>
+        
+        <!-- Tab Cek Meja -->
+        <div id="check-tables" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">Cek Ketersediaan Meja</h2>
+            
+            <div class="form-group">
+                <label for="checkDate">Pilih Tanggal:</label>
+                <input type="date" id="checkDate" class="form-control">
+            </div>
+            
+            <button id="checkAvailabilityBtn" class="btn btn-success">
+                <i class="fas fa-search"></i> Tampilkan
+            </button>
+            
+            <div id="availabilityResult" style="margin-top: 20px;">
+                <!-- Grid meja akan ditampilkan di sini -->
             </div>
         </div>
         
@@ -1298,6 +1632,31 @@ Es Teh Manis,8000</pre>
                     <button id="closeListModalBtn" class="btn btn-secondary">
                         <i class="fas fa-times"></i> Tutup
                     </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal untuk Atur Menu per Kategori -->
+        <div id="categoryMenuModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title" id="categoryMenuModalTitle">Atur Menu untuk Kategori</div>
+                    <button class="modal-close" id="closeCategoryMenuModal">&times;</button>
+                </div>
+                <div id="categoryMenuForm">
+                    <p>Pilih menu yang ingin dimasukkan ke kategori ini:</p>
+                    <div id="categoryMenuList" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 15px;">
+                        <!-- Daftar menu dengan checkbox akan diisi lewat JavaScript -->
+                    </div>
+                    <input type="hidden" id="currentCategoryId">
+                    <div class="btn-group">
+                        <button id="saveCategoryMenuBtn" class="btn btn-success">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
+                        <button id="cancelCategoryMenuBtn" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1371,6 +1730,14 @@ Es Teh Manis,8000</pre>
                         <input type="number" id="editMenuPrice" class="form-control" placeholder="Harga menu">
                     </div>
                     
+                    <!-- Kategori di modal edit -->
+                    <div class="form-group">
+                        <label>Kategori (bisa pilih lebih dari satu):</label>
+                        <div id="editMenuCategoriesContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; padding: 10px;">
+                            <!-- Kategori akan di-load di sini sebagai checkbox -->
+                        </div>
+                    </div>
+                    
                     <input type="hidden" id="editMenuId">
                     
                     <div class="btn-group" style="margin-top: 20px;">
@@ -1385,27 +1752,162 @@ Es Teh Manis,8000</pre>
             </div>
         </div>
         
+        <!-- Modal untuk Edit Kategori -->
+        <div id="editCategoryModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Edit Kategori</div>
+                    <button class="modal-close" id="closeEditCategoryModal">&times;</button>
+                </div>
+                <div id="editCategoryForm">
+                    <div class="form-group">
+                        <label for="editCategoryName">Nama Kategori:</label>
+                        <input type="text" id="editCategoryName" class="form-control" placeholder="Nama kategori">
+                    </div>
+                    
+                    <input type="hidden" id="editCategoryId">
+                    
+                    <div class="btn-group" style="margin-top: 20px;">
+                        <button id="updateCategoryBtn" class="btn btn-success">
+                            <i class="fas fa-check"></i> Update Kategori di Firebase
+                        </button>
+                        <button id="cancelEditCategoryBtn" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal untuk Tambah Meja -->
+        <div id="addTableModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Tambah Meja Baru</div>
+                    <button class="modal-close" id="closeAddTableModal">&times;</button>
+                </div>
+                <div class="form-group">
+                    <label for="newTableNumber">Nomor Meja:</label>
+                    <input type="text" id="newTableNumber" class="form-control" placeholder="Contoh: 1, A2, 3B">
+                </div>
+                <div class="form-group">
+                    <label for="newTableArea">Area:</label>
+                    <select id="newTableArea" class="form-control">
+                        <option value="non">Non Smoking</option>
+                        <option value="smoking">Smoking</option>
+                        <option value="tambahan">Tambahan</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button id="saveNewTableBtn" class="btn btn-success">Simpan</button>
+                    <button id="cancelAddTableBtn" class="btn btn-secondary">Batal</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal untuk Import CSV Meja -->
+        <div id="importTableCsvModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Import Meja dari CSV</div>
+                    <button class="modal-close" id="closeImportTableModal">&times;</button>
+                </div>
+                <div class="example">
+                    <strong>Format:</strong> nomor,area<br>
+                    <strong>Area:</strong> non, smoking, tambahan<br>
+                    <strong>Contoh:</strong><br>
+                    1,non<br>
+                    2,smoking<br>
+                    3,tambahan
+                </div>
+                <textarea id="importTableCsvText" class="form-control" placeholder="Tempel data CSV di sini..." rows="10"></textarea>
+                <div class="btn-group" style="margin-top: 15px;">
+                    <button id="importTableCsvBtn" class="btn btn-success">Import</button>
+                    <button id="cancelImportTableBtn" class="btn btn-secondary">Batal</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal untuk Pilih Meja -->
+        <div id="selectTableModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Pilih Meja untuk Reservasi</div>
+                    <button class="modal-close" id="closeSelectTableModal">&times;</button>
+                </div>
+                <div id="tableSelectionContainer">
+                    <!-- Grid meja akan di-load di sini -->
+                </div>
+                <div class="btn-group" style="margin-top: 15px;">
+                    <button id="confirmSelectTableBtn" class="btn btn-success">Konfirmasi</button>
+                    <button id="cancelSelectTableBtn" class="btn btn-secondary">Batal</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal untuk Tambah DP -->
+        <div id="addDpModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Tambah Uang Muka (DP)</div>
+                    <button class="modal-close" id="closeAddDpModal">&times;</button>
+                </div>
+                <div class="form-group">
+                    <label for="dpAmount">Nominal DP (Rp):</label>
+                    <input type="text" id="dpAmount" class="form-control" placeholder="Contoh: 50000" onkeyup="formatRupiah(this)">
+                </div>
+                <div class="form-group">
+                    <label for="dpMethod">Metode Pembayaran:</label>
+                    <select id="dpMethod" class="form-control">
+                        <option value="Cash">Cash</option>
+                        <option value="Transfer">Transfer</option>
+                    </select>
+                </div>
+                <input type="hidden" id="dpReservationId">
+                <div class="btn-group" style="margin-top: 15px;">
+                    <button id="saveDpBtn" class="btn btn-success">Simpan DP</button>
+                    <button id="cancelAddDpBtn" class="btn btn-secondary">Batal</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal untuk Detail Menu per Meja -->
+        <div id="menuDetailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title" id="menuDetailTitle"></div>
+                    <button class="modal-close" id="closeMenuDetailModal">&times;</button>
+                </div>
+                <div id="menuDetailContent"></div>
+            </div>
+        </div>
+        
+        <!-- Modal untuk Detail Reservasi dari Cek Meja -->
+        <div id="reservationDetailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Detail Reservasi</div>
+                    <button class="modal-close" id="closeReservationDetailModal">&times;</button>
+                </div>
+                <div id="reservationDetailContent"></div>
+            </div>
+        </div>
+        
         <!-- Alert container -->
         <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 300px;"></div>
     </div>
 
     <script>
-     const firebaseConfig = {
-
-  apiKey: "AIzaSyDyVwsEo3QuL0RfnCDhBdUw5Fp3VgJiy6c",
-
-  authDomain: "invoicereservasi-f565a.firebaseapp.com",
-
-  projectId: "invoicereservasi-f565a",
-
-  storageBucket: "invoicereservasi-f565a.firebasestorage.app",
-
-  messagingSenderId: "1092518397796",
-
-  appId: "1:1092518397796:web:fde9f49d7dae60ba439c71"
-
-};
-
+        // ============ FIREBASE CONFIGURATION ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyDyVwsEo3QuL0RfnCDhBdUw5Fp3VgJiy6c",
+            authDomain: "invoicereservasi-f565a.firebaseapp.com",
+            projectId: "invoicereservasi-f565a",
+            storageBucket: "invoicereservasi-f565a.firebasestorage.app",
+            messagingSenderId: "1092518397796",
+            appId: "1:1092518397796:web:fde9f49d7dae60ba439c71"
+        };
+        
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -1414,18 +1916,21 @@ Es Teh Manis,8000</pre>
         // ============ AUTH STATE ============
         auth.onAuthStateChanged((user) => {
             if (user) {
-                // User is signed in
                 console.log('User logged in:', user.email);
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('appContainer').style.display = 'block';
                 document.getElementById('userInfo').style.display = 'flex';
                 document.getElementById('userEmail').textContent = user.email;
                 
+                // Set default date untuk laporan dan cek meja ke hari ini
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('reportDate').value = today;
+                document.getElementById('checkDate').value = today;
+                
                 // Load data
                 loadAllData();
                 setupFirebaseListeners();
             } else {
-                // User is signed out
                 console.log('User logged out');
                 document.getElementById('loginContainer').style.display = 'block';
                 document.getElementById('appContainer').style.display = 'none';
@@ -1645,19 +2150,22 @@ Es Teh Manis,8000</pre>
             hideInstallButton();
         }
         
-        // ============ APPLICATION CODE ============
-        
-        // Data storage (now from Firebase)
+        // ============ GLOBAL VARIABLES ============
         let menuItems = [];
+        let categories = [];
         let reservations = [];
         let takeawayOrders = [];
+        let tables = []; // Array untuk menyimpan data meja
         
         let currentOrder = {
             id: null,
             customerName: '',
             reservationDate: '',
             items: [],
-            total: 0
+            total: 0,
+            tables: [], // array nomor meja
+            dpAmount: null,
+            dpMethod: null
         };
         
         let currentTakeaway = {
@@ -1671,7 +2179,7 @@ Es Teh Manis,8000</pre>
         const tabElements = document.querySelectorAll('.tab');
         const tabContentElements = document.querySelectorAll('.tab-content');
         
-        // Initialize the app
+        // ============ INITIALIZATION ============
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Restaurant Order System Initialized with Firebase');
             
@@ -1684,11 +2192,9 @@ Es Teh Manis,8000</pre>
                 tab.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
                     
-                    // Update active tab
                     tabElements.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
-                    // Update active content
                     tabContentElements.forEach(content => {
                         content.classList.remove('active');
                         if (content.id === tabId) {
@@ -1709,11 +2215,19 @@ Es Teh Manis,8000</pre>
                         document.getElementById('actionButtons').style.display = 'none';
                         document.getElementById('actionButtonsTakeaway').style.display = 'none';
                     }
+                    
+                    // Load data khusus jika tab meja dibuka
+                    if (tabId === 'tables') {
+                        loadTables();
+                    }
                 });
             });
             
             // Event listener for adding menu
             document.getElementById('addMenuBtn').addEventListener('click', addMenuItem);
+            
+            // Event listener for adding category
+            document.getElementById('addCategoryBtn').addEventListener('click', addCategory);
             
             // Event listeners for order tab
             document.getElementById('addToOrderBtn').addEventListener('click', addItemToOrder);
@@ -1850,6 +2364,28 @@ Es Teh Manis,8000</pre>
                 document.getElementById('editMenuModal').style.display = 'none';
             });
             
+            // Event listener for close edit category modal
+            document.getElementById('closeEditCategoryModal').addEventListener('click', function() {
+                document.getElementById('editCategoryModal').style.display = 'none';
+            });
+            
+            document.getElementById('cancelEditCategoryBtn').addEventListener('click', function() {
+                document.getElementById('editCategoryModal').style.display = 'none';
+            });
+            
+            document.getElementById('updateCategoryBtn').addEventListener('click', updateCategory);
+            
+            // Event listeners untuk modal atur menu kategori
+            document.getElementById('closeCategoryMenuModal').addEventListener('click', function() {
+                document.getElementById('categoryMenuModal').style.display = 'none';
+            });
+            
+            document.getElementById('cancelCategoryMenuBtn').addEventListener('click', function() {
+                document.getElementById('categoryMenuModal').style.display = 'none';
+            });
+            
+            document.getElementById('saveCategoryMenuBtn').addEventListener('click', saveCategoryMenus);
+            
             // Close modal when clicking outside
             document.getElementById('invoiceModal').addEventListener('click', function(e) {
                 if (e.target === this) {
@@ -1875,6 +2411,18 @@ Es Teh Manis,8000</pre>
                 }
             });
             
+            document.getElementById('editCategoryModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('categoryMenuModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
             // Close autocomplete when clicking outside
             document.addEventListener('click', function(e) {
                 const autocompleteListOrder = document.getElementById('autocompleteListOrder');
@@ -1891,10 +2439,67 @@ Es Teh Manis,8000</pre>
                 }
             });
             
-            // NEW: Event listeners for search boxes
+            // Event listeners for search boxes
             document.getElementById('searchActiveReservations')?.addEventListener('input', loadReservations);
             document.getElementById('searchPastReservations')?.addEventListener('input', loadReservations);
             document.getElementById('searchTakeaway')?.addEventListener('input', loadTakeawayList);
+            
+            // Event listener untuk laporan harian
+            document.getElementById('generateReportBtn').addEventListener('click', generateDailyReport);
+            
+            // Event listener untuk manajemen meja
+            document.getElementById('addTableBtn').addEventListener('click', () => {
+                document.getElementById('addTableModal').style.display = 'flex';
+            });
+            document.getElementById('closeAddTableModal').addEventListener('click', () => {
+                document.getElementById('addTableModal').style.display = 'none';
+            });
+            document.getElementById('cancelAddTableBtn').addEventListener('click', () => {
+                document.getElementById('addTableModal').style.display = 'none';
+            });
+            document.getElementById('saveNewTableBtn').addEventListener('click', addTable);
+            
+            document.getElementById('importTableCsvBtn').addEventListener('click', () => {
+                document.getElementById('importTableCsvModal').style.display = 'flex';
+            });
+            document.getElementById('closeImportTableModal').addEventListener('click', () => {
+                document.getElementById('importTableCsvModal').style.display = 'none';
+            });
+            document.getElementById('cancelImportTableBtn').addEventListener('click', () => {
+                document.getElementById('importTableCsvModal').style.display = 'none';
+            });
+            document.getElementById('importTableCsvBtn').addEventListener('click', importTablesFromCSV);
+            
+            // Event listener untuk pilih meja
+            document.getElementById('selectTableBtn').addEventListener('click', openSelectTableModal);
+            document.getElementById('closeSelectTableModal').addEventListener('click', () => {
+                document.getElementById('selectTableModal').style.display = 'none';
+            });
+            document.getElementById('cancelSelectTableBtn').addEventListener('click', () => {
+                document.getElementById('selectTableModal').style.display = 'none';
+            });
+            document.getElementById('confirmSelectTableBtn').addEventListener('click', confirmSelectTables);
+            
+            // Event listener untuk DP
+            document.getElementById('closeAddDpModal').addEventListener('click', () => {
+                document.getElementById('addDpModal').style.display = 'none';
+            });
+            document.getElementById('cancelAddDpBtn').addEventListener('click', () => {
+                document.getElementById('addDpModal').style.display = 'none';
+            });
+            document.getElementById('saveDpBtn').addEventListener('click', saveDp);
+            
+            // Event listener untuk cek meja
+            document.getElementById('checkAvailabilityBtn').addEventListener('click', checkTableAvailability);
+            
+            // Event listener untuk modal detail menu
+            document.getElementById('closeMenuDetailModal').addEventListener('click', () => {
+                document.getElementById('menuDetailModal').style.display = 'none';
+            });
+            
+            document.getElementById('closeReservationDetailModal').addEventListener('click', () => {
+                document.getElementById('reservationDetailModal').style.display = 'none';
+            });
             
             // Show welcome message
             setTimeout(() => {
@@ -1918,9 +2523,25 @@ Es Teh Manis,8000</pre>
                 });
                 loadMenuItems();
                 updateMenuCount();
+                renderCategoryCheckboxes();
             }, (error) => {
                 console.error('Error listening to menu:', error);
                 showAlert('Gagal memuat data menu dari Firebase', 'danger');
+            });
+            
+            // Listen for category changes
+            db.collection('categories').orderBy('name').onSnapshot((snapshot) => {
+                categories = [];
+                snapshot.forEach((doc) => {
+                    categories.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                loadCategories();
+                renderCategoryCheckboxes(); // untuk form tambah/edit menu
+            }, (error) => {
+                console.error('Error listening to categories:', error);
             });
             
             // Listen for reservation changes
@@ -1952,6 +2573,22 @@ Es Teh Manis,8000</pre>
             }, (error) => {
                 console.error('Error listening to takeaway:', error);
             });
+            
+            // Listen for tables changes
+            db.collection('tables').onSnapshot((snapshot) => {
+                tables = [];
+                snapshot.forEach((doc) => {
+                    tables.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                if (document.getElementById('tables').classList.contains('active')) {
+                    renderTablesList();
+                }
+            }, (error) => {
+                console.error('Error listening to tables:', error);
+            });
         }
         
         function loadAllData() {
@@ -1973,6 +2610,22 @@ Es Teh Manis,8000</pre>
                 .catch((error) => {
                     console.error('Error loading menu:', error);
                     showAlert('Gagal memuat data menu dari Firebase', 'danger');
+                });
+            
+            // Categories
+            db.collection('categories').orderBy('name').get()
+                .then((snapshot) => {
+                    categories = [];
+                    snapshot.forEach((doc) => {
+                        categories.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    loadCategories();
+                })
+                .catch((error) => {
+                    console.error('Error loading categories:', error);
                 });
             
             // Reservations
@@ -2008,6 +2661,64 @@ Es Teh Manis,8000</pre>
                 .catch((error) => {
                     console.error('Error loading takeaway:', error);
                 });
+            
+            // Tables
+            db.collection('tables').orderBy('number').get()
+                .then((snapshot) => {
+                    tables = [];
+                    snapshot.forEach((doc) => {
+                        tables.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    if (document.getElementById('tables').classList.contains('active')) {
+                        renderTablesList();
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error loading tables:', error);
+                });
+        }
+        
+        // Function to render category checkboxes in add/edit menu form
+        function renderCategoryCheckboxes() {
+            const container = document.getElementById('menuCategoriesContainer');
+            const editContainer = document.getElementById('editMenuCategoriesContainer');
+            
+            if (!container && !editContainer) return;
+            
+            let html = '';
+            categories.forEach(cat => {
+                html += `
+                    <div style="margin-bottom: 5px;">
+                        <label>
+                            <input type="checkbox" class="category-checkbox" value="${cat.id}" data-category-name="${cat.name}">
+                            ${cat.name}
+                        </label>
+                    </div>
+                `;
+            });
+            
+            if (container) container.innerHTML = html || '<p>Belum ada kategori. Buat kategori terlebih dahulu.</p>';
+            if (editContainer) editContainer.innerHTML = html || '<p>Belum ada kategori.</p>';
+        }
+        
+        // Get selected categories from checkboxes
+        function getSelectedCategories(containerId) {
+            const checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`);
+            return Array.from(checkboxes).map(cb => ({
+                id: cb.value,
+                name: cb.getAttribute('data-category-name')
+            }));
+        }
+        
+        // Set checkboxes based on menu's categories
+        function setSelectedCategories(containerId, categoryIds) {
+            const checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]`);
+            checkboxes.forEach(cb => {
+                cb.checked = categoryIds.includes(cb.value);
+            });
         }
         
         // Function to add a new menu item to Firebase
@@ -2027,6 +2738,7 @@ Es Teh Manis,8000</pre>
             
             const name = nameInput.value.trim();
             const price = parseInt(priceInput.value);
+            const selectedCategories = getSelectedCategories('menuCategoriesContainer');
             
             if (!name || !price || price <= 0) {
                 showAlert('Harap isi nama menu dan harga dengan benar!', 'danger');
@@ -2038,44 +2750,293 @@ Es Teh Manis,8000</pre>
                 item.name.toLowerCase() === name.toLowerCase()
             );
             
+            const menuData = {
+                name: name,
+                price: price,
+                categories: selectedCategories,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
             if (existingMenu) {
                 // Update existing menu
-                db.collection('menu').doc(existingMenu.id).update({
-                    name: name,
-                    price: price
-                })
-                .then(() => {
-                    showAlert('Menu berhasil diperbarui di Firebase!', 'success');
-                })
-                .catch((error) => {
-                    console.error('Error updating menu:', error);
-                    showAlert('Gagal memperbarui menu di Firebase', 'danger');
-                });
+                db.collection('menu').doc(existingMenu.id).update(menuData)
+                    .then(() => {
+                        showAlert('Menu berhasil diperbarui di Firebase!', 'success');
+                    })
+                    .catch((error) => {
+                        console.error('Error updating menu:', error);
+                        showAlert('Gagal memperbarui menu di Firebase', 'danger');
+                    });
             } else {
                 // Add new menu item
-                db.collection('menu').add({
-                    name: name,
-                    price: price,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                })
-                .then(() => {
-                    showAlert('Menu berhasil ditambahkan ke Firebase!', 'success');
-                })
-                .catch((error) => {
-                    console.error('Error adding menu:', error);
-                    showAlert('Gagal menambahkan menu ke Firebase', 'danger');
-                });
+                menuData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                db.collection('menu').add(menuData)
+                    .then(() => {
+                        showAlert('Menu berhasil ditambahkan ke Firebase!', 'success');
+                    })
+                    .catch((error) => {
+                        console.error('Error adding menu:', error);
+                        showAlert('Gagal menambahkan menu ke Firebase', 'danger');
+                    });
             }
             
             // Clear inputs
             nameInput.value = '';
             priceInput.value = '';
+            const checkboxes = document.querySelectorAll('#menuCategoriesContainer input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
             
-            // Focus on name input
             nameInput.focus();
         }
         
-        // Function to load and display menu items
+        // Add category
+        function addCategory() {
+            if (!isOnline) {
+                showAlert('Anda sedang offline. Tidak dapat menambah kategori ke Firebase.', 'danger');
+                return;
+            }
+            
+            if (!auth.currentUser) {
+                showAlert('Anda harus login terlebih dahulu!', 'danger');
+                return;
+            }
+            
+            const nameInput = document.getElementById('categoryName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showAlert('Harap isi nama kategori!', 'danger');
+                return;
+            }
+            
+            const existing = categories.find(c => c.name.toLowerCase() === name.toLowerCase());
+            if (existing) {
+                showAlert('Kategori dengan nama yang sama sudah ada!', 'warning');
+                return;
+            }
+            
+            db.collection('categories').add({
+                name: name,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                showAlert('Kategori berhasil ditambahkan!', 'success');
+                nameInput.value = '';
+            })
+            .catch((error) => {
+                console.error('Error adding category:', error);
+                showAlert('Gagal menambah kategori', 'danger');
+            });
+        }
+        
+        // Load and display categories (dengan tombol atur menu)
+        function loadCategories() {
+            const container = document.getElementById('categoriesListContainer');
+            if (!container) return;
+            
+            if (categories.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-tags"></i>
+                        <h3>Belum ada kategori</h3>
+                        <p>Tambahkan kategori pertama Anda</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortedCategories = [...categories].sort((a, b) => a.name.localeCompare(b.name));
+            container.innerHTML = sortedCategories.map(cat => `
+                <div class="category-item">
+                    <span class="category-name">${cat.name}</span>
+                    <div class="menu-actions">
+                        <button class="btn btn-sm btn-info" onclick="openCategoryMenuModal('${cat.id}', '${cat.name}')">
+                            <i class="fas fa-list"></i> Atur Menu
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="editCategory('${cat.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCategory('${cat.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Open modal untuk atur menu per kategori
+        function openCategoryMenuModal(categoryId, categoryName) {
+            document.getElementById('currentCategoryId').value = categoryId;
+            document.getElementById('categoryMenuModalTitle').textContent = `Atur Menu untuk Kategori: ${categoryName}`;
+            
+            const menuListContainer = document.getElementById('categoryMenuList');
+            if (menuItems.length === 0) {
+                menuListContainer.innerHTML = '<p>Belum ada menu. Tambahkan menu terlebih dahulu.</p>';
+            } else {
+                const menuInCategory = menuItems.filter(item => 
+                    item.categories && item.categories.some(c => c.id === categoryId)
+                ).map(item => item.id);
+                
+                let html = '';
+                menuItems.sort((a, b) => a.name.localeCompare(b.name)).forEach(menu => {
+                    const checked = menuInCategory.includes(menu.id) ? 'checked' : '';
+                    html += `
+                        <div style="margin-bottom: 8px;">
+                            <label>
+                                <input type="checkbox" class="menu-checkbox" value="${menu.id}" data-menu-name="${menu.name}" ${checked}>
+                                ${menu.name} - Rp ${menu.price.toLocaleString('id-ID')}
+                            </label>
+                        </div>
+                    `;
+                });
+                menuListContainer.innerHTML = html;
+            }
+            
+            document.getElementById('categoryMenuModal').style.display = 'flex';
+        }
+        
+        // Simpan perubahan menu untuk kategori tertentu
+        function saveCategoryMenus() {
+            if (!isOnline) {
+                showAlert('Anda sedang offline. Tidak dapat menyimpan perubahan.', 'danger');
+                return;
+            }
+            
+            const categoryId = document.getElementById('currentCategoryId').value;
+            const checkboxes = document.querySelectorAll('#categoryMenuList input[type="checkbox"]');
+            
+            const selectedMenuIds = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) selectedMenuIds.push(cb.value);
+            });
+            
+            const batch = db.batch();
+            
+            menuItems.forEach(menu => {
+                let currentCategories = menu.categories ? [...menu.categories] : [];
+                
+                const shouldHave = selectedMenuIds.includes(menu.id);
+                const hasNow = currentCategories.some(c => c.id === categoryId);
+                
+                if (shouldHave && !hasNow) {
+                    const category = categories.find(c => c.id === categoryId);
+                    if (category) {
+                        currentCategories.push({ id: category.id, name: category.name });
+                    }
+                } else if (!shouldHave && hasNow) {
+                    currentCategories = currentCategories.filter(c => c.id !== categoryId);
+                } else {
+                    return;
+                }
+                
+                const menuRef = db.collection('menu').doc(menu.id);
+                batch.update(menuRef, { 
+                    categories: currentCategories,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            });
+            
+            batch.commit()
+                .then(() => {
+                    showAlert('Kategori berhasil diatur pada menu!', 'success');
+                    document.getElementById('categoryMenuModal').style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error('Error updating menu categories:', error);
+                    showAlert('Gagal menyimpan perubahan: ' + error.message, 'danger');
+                });
+        }
+        
+        // Edit category
+        function editCategory(id) {
+            const category = categories.find(c => c.id === id);
+            if (!category) return;
+            
+            document.getElementById('editCategoryName').value = category.name;
+            document.getElementById('editCategoryId').value = id;
+            document.getElementById('editCategoryModal').style.display = 'flex';
+        }
+        
+        // Update category
+        function updateCategory() {
+            if (!isOnline) {
+                showAlert('Anda sedang offline. Tidak dapat mengupdate kategori.', 'danger');
+                return;
+            }
+            
+            const id = document.getElementById('editCategoryId').value;
+            const newName = document.getElementById('editCategoryName').value.trim();
+            
+            if (!newName) {
+                showAlert('Nama kategori tidak boleh kosong!', 'danger');
+                return;
+            }
+            
+            const duplicate = categories.find(c => c.id !== id && c.name.toLowerCase() === newName.toLowerCase());
+            if (duplicate) {
+                showAlert('Kategori dengan nama yang sama sudah ada!', 'warning');
+                return;
+            }
+            
+            db.collection('categories').doc(id).update({ name: newName })
+                .then(() => {
+                    const batch = db.batch();
+                    menuItems.forEach(menu => {
+                        if (menu.categories && menu.categories.some(c => c.id === id)) {
+                            const newCategories = menu.categories.map(c => 
+                                c.id === id ? { id: id, name: newName } : c
+                            );
+                            const menuRef = db.collection('menu').doc(menu.id);
+                            batch.update(menuRef, { categories: newCategories });
+                        }
+                    });
+                    return batch.commit();
+                })
+                .then(() => {
+                    showAlert('Kategori berhasil diupdate!', 'success');
+                    document.getElementById('editCategoryModal').style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error('Error updating category:', error);
+                    showAlert('Gagal mengupdate kategori', 'danger');
+                });
+        }
+        
+        // Delete category
+        function deleteCategory(id) {
+            if (!isOnline) {
+                showAlert('Anda sedang offline. Tidak dapat menghapus kategori.', 'danger');
+                return;
+            }
+            
+            if (!confirm('Apakah Anda yakin ingin menghapus kategori ini? Menu yang menggunakan kategori ini tidak akan terhapus, tetapi kategori akan dihapus dari menu tersebut.')) {
+                return;
+            }
+            
+            const batch = db.batch();
+            
+            menuItems.forEach(menu => {
+                if (menu.categories && menu.categories.some(c => c.id === id)) {
+                    const newCategories = menu.categories.filter(c => c.id !== id);
+                    const menuRef = db.collection('menu').doc(menu.id);
+                    batch.update(menuRef, { categories: newCategories });
+                }
+            });
+            
+            const categoryRef = db.collection('categories').doc(id);
+            batch.delete(categoryRef);
+            
+            batch.commit()
+                .then(() => {
+                    showAlert('Kategori berhasil dihapus!', 'success');
+                })
+                .catch((error) => {
+                    console.error('Error deleting category:', error);
+                    showAlert('Gagal menghapus kategori', 'danger');
+                });
+        }
+        
+        // Function to load and display menu items (modified to show categories)
         function loadMenuItems() {
             const container = document.getElementById('menuItemsContainer');
             
@@ -2090,27 +3051,33 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Sort menu items by name
             const sortedMenuItems = [...menuItems].sort((a, b) => 
                 a.name.localeCompare(b.name)
             );
             
-            container.innerHTML = sortedMenuItems.map(item => `
-                <div class="menu-item" data-id="${item.id}">
-                    <div class="menu-details">
-                        <h4>${item.name}</h4>
-                        <div class="menu-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+            container.innerHTML = sortedMenuItems.map(item => {
+                const categoriesHtml = item.categories && item.categories.length > 0 
+                    ? `<div class="menu-categories">${item.categories.map(c => `<span>${c.name}</span>`).join('')}</div>`
+                    : '';
+                    
+                return `
+                    <div class="menu-item" data-id="${item.id}">
+                        <div class="menu-details">
+                            <h4>${item.name}</h4>
+                            <div class="menu-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                            ${categoriesHtml}
+                        </div>
+                        <div class="menu-actions">
+                            <button class="btn btn-sm btn-warning" onclick="editMenuItem('${item.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteMenuItem('${item.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="menu-actions">
-                        <button class="btn btn-sm btn-warning" onclick="editMenuItem('${item.id}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteMenuItem('${item.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         // Function to update menu count
@@ -2134,21 +3101,26 @@ Es Teh Manis,8000</pre>
             document.getElementById('takeawayListCount').textContent = takeawayOrders.length;
         }
         
-        // Function to edit a menu item
+        // Function to edit a menu item (modified to include categories)
         function editMenuItem(id) {
             const menuItem = menuItems.find(item => item.id === id);
             if (!menuItem) return;
             
-            // Populate modal with menu data
             document.getElementById('editMenuName').value = menuItem.name;
             document.getElementById('editMenuPrice').value = menuItem.price;
             document.getElementById('editMenuId').value = id;
             
-            // Show modal
+            if (menuItem.categories) {
+                const categoryIds = menuItem.categories.map(c => c.id);
+                setSelectedCategories('editMenuCategoriesContainer', categoryIds);
+            } else {
+                setSelectedCategories('editMenuCategoriesContainer', []);
+            }
+            
             document.getElementById('editMenuModal').style.display = 'flex';
         }
         
-        // Function to update a menu item in Firebase
+        // Function to update a menu item in Firebase (modified)
         function updateMenuItem() {
             if (!isOnline) {
                 showAlert('Anda sedang offline. Tidak dapat mengupdate menu di Firebase.', 'danger');
@@ -2163,13 +3135,13 @@ Es Teh Manis,8000</pre>
             const id = document.getElementById('editMenuId').value;
             const newName = document.getElementById('editMenuName').value.trim();
             const newPrice = parseInt(document.getElementById('editMenuPrice').value);
+            const selectedCategories = getSelectedCategories('editMenuCategoriesContainer');
             
             if (!newName || !newPrice || newPrice <= 0) {
                 showAlert('Harap isi nama menu dan harga dengan benar!', 'danger');
                 return;
             }
             
-            // Check if another menu already has the same name (excluding current menu)
             const duplicateIndex = menuItems.findIndex(item => 
                 item.id !== id && item.name.toLowerCase() === newName.toLowerCase()
             );
@@ -2179,10 +3151,11 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Update in Firebase
             db.collection('menu').doc(id).update({
                 name: newName,
-                price: newPrice
+                price: newPrice,
+                categories: selectedCategories,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             })
             .then(() => {
                 showAlert('Menu berhasil diupdate di Firebase!', 'success');
@@ -2244,7 +3217,6 @@ Es Teh Manis,8000</pre>
                 let importedCount = 0;
                 let updatedCount = 0;
                 
-                // Process each line
                 const batch = db.batch();
                 
                 for (let i = 0; i < lines.length; i++) {
@@ -2259,22 +3231,24 @@ Es Teh Manis,8000</pre>
                     
                     if (!name || isNaN(price) || price <= 0) continue;
                     
-                    // Check if menu already exists
                     const existingMenu = menuItems.find(item => 
                         item.name.toLowerCase() === name.toLowerCase()
                     );
                     
                     if (existingMenu) {
-                        // Update existing menu
                         const docRef = db.collection('menu').doc(existingMenu.id);
-                        batch.update(docRef, { name: name, price: price });
+                        batch.update(docRef, { 
+                            name: name, 
+                            price: price,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
                         updatedCount++;
                     } else {
-                        // Add new menu item
                         const newRef = db.collection('menu').doc();
                         batch.set(newRef, {
                             name: name,
                             price: price,
+                            categories: [],
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
                         importedCount++;
@@ -2286,17 +3260,12 @@ Es Teh Manis,8000</pre>
                     return;
                 }
                 
-                // Commit the batch
                 batch.commit()
                     .then(() => {
-                        // Clear textarea
                         document.getElementById('manualImportText').value = '';
-                        
-                        // Show import result
                         let message = 'Import manual ke Firebase selesai! ';
                         if (importedCount > 0) message += `${importedCount} menu baru ditambahkan. `;
                         if (updatedCount > 0) message += `${updatedCount} menu diperbarui.`;
-                        
                         showAlert(message, 'success');
                     })
                     .catch((error) => {
@@ -2312,10 +3281,8 @@ Es Teh Manis,8000</pre>
         
         // Function to download template CSV
         function downloadTemplateCSV() {
-            // Create CSV content
             const csvContent = "nama_menu,harga\nNasi Goreng Special,25000\nAyam Bakar Pedas,35000\nEs Teh Manis,8000";
             
-            // Create blob and download link
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2336,13 +3303,11 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Create CSV content
             let csvContent = "nama_menu,harga\n";
             menuItems.forEach(item => {
                 csvContent += `${item.name},${item.price}\n`;
             });
             
-            // Create blob and download link
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2356,7 +3321,7 @@ Es Teh Manis,8000</pre>
             showAlert('Data menu dari Firebase berhasil diexport!', 'success');
         }
         
-        // Function untuk import dari file CSV (baca file saja)
+        // Function untuk import dari file CSV
         function importMenuFromCSV(event) {
             const file = event.target.files[0];
             if (!file) {
@@ -2364,7 +3329,6 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Cek apakah file adalah CSV
             if (!file.name.toLowerCase().endsWith('.csv') && !file.type.includes('text/csv')) {
                 showAlert('File harus berformat CSV!', 'danger');
                 event.target.value = '';
@@ -2375,13 +3339,8 @@ Es Teh Manis,8000</pre>
             reader.onload = function(e) {
                 try {
                     const content = e.target.result;
-                    
-                    // Auto-fill manual import textarea dengan isi file
                     document.getElementById('manualImportText').value = content;
-                    
-                    // Tampilkan pesan bahwa data siap diimport
                     showAlert('Data CSV berhasil dibaca. Klik "Import Data Manual" untuk mengirim ke Firebase.', 'info');
-                    
                 } catch (error) {
                     console.error('Error reading CSV file:', error);
                     showAlert('Gagal membaca file CSV. Coba gunakan import manual.', 'danger');
@@ -2408,7 +3367,7 @@ Es Teh Manis,8000</pre>
             const searchTermLower = searchTerm.toLowerCase();
             const filteredItems = menuItems.filter(item => 
                 item.name.toLowerCase().includes(searchTermLower)
-            ).slice(0, 10); // Limit to 10 suggestions
+            ).slice(0, 10);
             
             if (filteredItems.length === 0) {
                 autocompleteList.style.display = 'none';
@@ -2424,17 +3383,12 @@ Es Teh Manis,8000</pre>
             
             autocompleteList.style.display = 'block';
             
-            // Add click event to autocomplete items
             const autocompleteItems = autocompleteList.querySelectorAll('.autocomplete-item');
             autocompleteItems.forEach(item => {
                 item.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
                     const name = this.getAttribute('data-name');
-                    
                     document.getElementById(`searchMenu${type.charAt(0).toUpperCase() + type.slice(1)}`).value = name;
                     autocompleteList.style.display = 'none';
-                    
-                    // Tidak memfokuskan ke input jumlah - keyboard tidak muncul otomatis
                 });
             });
         }
@@ -2442,14 +3396,11 @@ Es Teh Manis,8000</pre>
         // Function to highlight search term in text
         function highlightText(text, searchTerm) {
             if (!searchTerm.trim()) return text;
-            
             const regex = new RegExp(`(${searchTerm})`, 'gi');
             return text.replace(regex, '<mark>$1</mark>');
         }
         
         // ============ ORDER FUNCTIONS ============
-        
-        // Function to add an item to the current order
         function addItemToOrder() {
             const searchInput = document.getElementById('searchMenuOrder');
             const quantityInput = document.getElementById('itemQuantityOrder');
@@ -2464,7 +3415,6 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Find the menu item by name
             const menuItem = menuItems.find(item => 
                 item.name.toLowerCase() === menuName.toLowerCase()
             );
@@ -2474,33 +3424,27 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Check if item already exists in order
             const existingItemIndex = currentOrder.items.findIndex(item => item.id === menuItem.id && item.notes === notes);
             
             if (existingItemIndex !== -1) {
-                // Update quantity for item with same notes
                 currentOrder.items[existingItemIndex].quantity += quantity;
                 currentOrder.items[existingItemIndex].subtotal = 
                     currentOrder.items[existingItemIndex].quantity * currentOrder.items[existingItemIndex].price;
             } else {
-                // Add new item
                 currentOrder.items.push({
                     id: menuItem.id,
                     name: menuItem.name,
                     price: menuItem.price,
                     quantity: quantity,
                     notes: notes,
-                    subtotal: menuItem.price * quantity
+                    subtotal: menuItem.price * quantity,
+                    categories: menuItem.categories || []
                 });
             }
             
-            // Update total
             updateOrderTotal();
-            
-            // Update UI
             loadOrderItems();
             
-            // Reset form
             searchInput.value = '';
             document.getElementById('autocompleteListOrder').style.display = 'none';
             quantityInput.value = 1;
@@ -2510,7 +3454,6 @@ Es Teh Manis,8000</pre>
             showAlert('Item berhasil ditambahkan ke pesanan!', 'success');
         }
         
-        // Function to load and display order items
         function loadOrderItems() {
             const container = document.getElementById('orderItemsContainer');
             const orderItemsCount = document.getElementById('orderItemsCount');
@@ -2560,7 +3503,6 @@ Es Teh Manis,8000</pre>
             orderItemsCount.textContent = currentOrder.items.length;
         }
         
-        // Function to change order item quantity using + or - buttons
         function changeOrderItemQuantity(index, change) {
             const newQuantity = currentOrder.items[index].quantity + change;
             
@@ -2576,13 +3518,12 @@ Es Teh Manis,8000</pre>
             loadOrderItems();
         }
         
-        // Function to update order item quantity from input
         function updateOrderItemQuantity(index, newQuantity) {
             newQuantity = parseInt(newQuantity);
             
             if (isNaN(newQuantity) || newQuantity < 1) {
                 showAlert('Jumlah harus minimal 1!', 'danger');
-                loadOrderItems(); // Reset to original value
+                loadOrderItems();
                 return;
             }
             
@@ -2593,28 +3534,22 @@ Es Teh Manis,8000</pre>
             loadOrderItems();
         }
         
-        // Function to edit order item (open modal)
         function editOrderItem(index) {
             const item = currentOrder.items[index];
             
-            // Populate modal with item data
             document.getElementById('editItemMenu').value = item.name;
             document.getElementById('editItemQuantity').value = item.quantity;
             document.getElementById('editItemNotes').value = item.notes || '';
             document.getElementById('editItemPrice').textContent = `Rp ${item.price.toLocaleString('id-ID')}`;
             document.getElementById('editItemIndex').value = index;
             
-            // Set modal type untuk order
             document.getElementById('editItemModal').setAttribute('data-type', 'order');
             
-            // Calculate and display subtotal
             updateEditItemSubtotal();
             
-            // Show modal
             document.getElementById('editItemModal').style.display = 'flex';
         }
         
-        // Function to update edit item subtotal
         function updateEditItemSubtotal() {
             const quantityInput = document.getElementById('editItemQuantity');
             const quantity = parseInt(quantityInput.value) || 1;
@@ -2632,7 +3567,6 @@ Es Teh Manis,8000</pre>
             document.getElementById('editItemSubtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
         }
         
-        // Function to update order item from modal
         function updateOrderItem() {
             const index = parseInt(document.getElementById('editItemIndex').value);
             const newQuantity = parseInt(document.getElementById('editItemQuantity').value);
@@ -2660,13 +3594,11 @@ Es Teh Manis,8000</pre>
                 loadTakeawayItems();
             }
             
-            // Close modal
             document.getElementById('editItemModal').style.display = 'none';
             
             showAlert('Item berhasil diupdate!', 'success');
         }
         
-        // Function to remove an item from order
         function removeOrderItem(index) {
             if (!confirm('Apakah Anda yakin ingin menghapus item ini dari pesanan?')) {
                 return;
@@ -2678,26 +3610,18 @@ Es Teh Manis,8000</pre>
             showAlert('Item berhasil dihapus dari pesanan!', 'success');
         }
         
-        // Function to update order total
         function updateOrderTotal() {
             currentOrder.total = currentOrder.items.reduce((sum, item) => sum + item.subtotal, 0);
             document.getElementById('orderTotal').textContent = currentOrder.total.toLocaleString('id-ID');
             updateOrderActionButtons();
         }
         
-        // Function to calculate DP (down payment) - 50% of total rounded to nearest 50,000
         function calculateDP(total) {
-            // Calculate 50% of total
             const fiftyPercent = total * 0.5;
-            
-            // Round to nearest 50,000
             const roundedDP = Math.round(fiftyPercent / 50000) * 50000;
-            
-            // Ensure minimum is 50,000
             return Math.max(50000, roundedDP);
         }
         
-        // Function to update order action buttons state
         function updateOrderActionButtons() {
             const hasItems = currentOrder.items.length > 0;
             const hasCustomerName = currentOrder.customerName.trim() !== '';
@@ -2712,9 +3636,7 @@ Es Teh Manis,8000</pre>
             }
         }
         
-        // Function to generate invoice automatically
         function generateInvoice() {
-            // Check if customer name and date are filled
             if (!currentOrder.customerName.trim()) {
                 showAlert('Harap isi nama pemesan terlebih dahulu!', 'danger');
                 document.getElementById('customerName').focus();
@@ -2732,7 +3654,6 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Format date
             const date = new Date(currentOrder.reservationDate);
             const formattedDate = date.toLocaleDateString('id-ID', {
                 weekday: 'long',
@@ -2741,16 +3662,13 @@ Es Teh Manis,8000</pre>
                 day: 'numeric'
             });
             
-            // Calculate DP
             const dpAmount = calculateDP(currentOrder.total);
             
-            // Generate invoice text
             let invoiceText = "Berikut rekapan pesanannya:\n\n";
             invoiceText += `Nama : ${currentOrder.customerName}\n`;
             invoiceText += `Tanggal Reservasi : ${formattedDate}\n\n`;
             invoiceText += "Pesanan:\n";
             
-            // Format setiap item
             currentOrder.items.forEach((item) => {
                 const qty = item.quantity.toString().padStart(2);
                 let nameWithNotes = item.name;
@@ -2770,9 +3688,7 @@ Es Teh Manis,8000</pre>
             return invoiceText;
         }
         
-        // Function to generate list pesanan
         function generateListPesanan(reservation) {
-            // Format date (tanpa hari)
             const date = new Date(reservation.reservationDate);
             const formattedDate = date.toLocaleDateString('id-ID', {
                 year: 'numeric',
@@ -2780,12 +3696,10 @@ Es Teh Manis,8000</pre>
                 day: 'numeric'
             });
             
-            // Generate list pesanan text
             let listText = "PESANAN RESERVASI\n\n";
             listText += `Nama : ${reservation.customerName}\n`;
             listText += `Tanggal Reservasi : ${formattedDate}\n\n`;
             
-            // Format setiap item (tanpa harga)
             reservation.items.forEach((item) => {
                 const qty = item.quantity.toString().padStart(2);
                 let nameWithNotes = item.name;
@@ -2803,27 +3717,22 @@ Es Teh Manis,8000</pre>
             return listText;
         }
         
-        // Function to copy invoice to clipboard
         function copyInvoiceToClipboard() {
             const invoiceText = document.getElementById('invoiceOutput').textContent;
             copyTextToClipboard(invoiceText, 'Invoice berhasil disalin ke clipboard!');
         }
         
-        // Function to copy modal invoice to clipboard
         function copyModalInvoiceToClipboard() {
             const invoiceText = document.getElementById('modalInvoiceContent').textContent;
             copyTextToClipboard(invoiceText, 'Invoice berhasil disalin ke clipboard!');
         }
         
-        // Function to copy modal list pesanan to clipboard
         function copyModalListPesananToClipboard() {
             const listText = document.getElementById('modalListPesananContent').textContent;
             copyTextToClipboard(listText, 'List pesanan berhasil disalin ke clipboard!');
         }
         
-        // Generic function to copy text to clipboard
         function copyTextToClipboard(text, successMessage) {
-            // Use the Clipboard API if available
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text)
                     .then(() => {
@@ -2838,7 +3747,6 @@ Es Teh Manis,8000</pre>
             }
         }
         
-        // Fallback method for copying to clipboard
         function fallbackCopyToClipboard(text, successMessage) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
@@ -2860,21 +3768,17 @@ Es Teh Manis,8000</pre>
             document.body.removeChild(textArea);
         }
         
-        // Function to load and display reservations from Firebase (with search filter)
         function loadReservations() {
             const today = new Date().toISOString().split('T')[0];
             const activeContainer = document.getElementById('activeReservationsContainer');
             const pastContainer = document.getElementById('pastReservationsContainer');
             
-            // NEW: Get search values
             const searchActive = document.getElementById('searchActiveReservations')?.value.toLowerCase() || '';
             const searchPast = document.getElementById('searchPastReservations')?.value.toLowerCase() || '';
             
-            // Filter by date
             let activeReservations = reservations.filter(r => r.reservationDate >= today);
             let pastReservations = reservations.filter(r => r.reservationDate < today);
             
-            // NEW: Apply search filter
             if (searchActive) {
                 activeReservations = activeReservations.filter(r => r.customerName.toLowerCase().includes(searchActive));
             }
@@ -2882,7 +3786,6 @@ Es Teh Manis,8000</pre>
                 pastReservations = pastReservations.filter(r => r.customerName.toLowerCase().includes(searchPast));
             }
             
-            // Sort reservations by date
             const sortedActiveReservations = [...activeReservations].sort((a, b) => 
                 new Date(a.reservationDate) - new Date(b.reservationDate)
             );
@@ -2891,82 +3794,68 @@ Es Teh Manis,8000</pre>
                 new Date(b.reservationDate) - new Date(a.reservationDate)
             );
             
-            // Display active reservations
+            function renderReservationCard(r, isActive) {
+                const tablesText = r.tables && r.tables.length ? `Meja: ${r.tables.join(', ')}` : '';
+                const dpText = r.dpAmount ? `DP: Rp ${r.dpAmount.toLocaleString('id-ID')} (${r.dpMethod})` : '<span class="dp-missing">Belum ada DP</span>';
+                const dpButton = !r.dpAmount ? `<button class="btn btn-sm btn-warning" onclick="openAddDpModal('${r.id}')"><i class="fas fa-money-bill"></i> Tambah DP</button>` : '';
+                
+                return `
+                    <div class="reservation-item ${isActive ? '' : 'past-reservation-item'}">
+                        <div class="reservation-header">
+                            <div class="reservation-name">${r.customerName}</div>
+                            <div class="reservation-date">${new Date(r.reservationDate).toLocaleDateString('id-ID')}</div>
+                        </div>
+                        <div class="reservation-total">
+                            <strong>${r.items.length} item</strong> - Total: Rp ${r.total.toLocaleString('id-ID')}
+                        </div>
+                        ${tablesText ? `<div><i class="fas fa-chair"></i> ${tablesText}</div>` : ''}
+                        <div class="dp-info"><i class="fas fa-hand-holding-usd"></i> ${dpText}</div>
+                        <div class="btn-group" style="margin-top: 10px;">
+                            <button class="btn btn-sm btn-secondary" onclick="viewReservationInvoice('${r.id}')">
+                                <i class="fas fa-eye"></i> Lihat Invoice
+                            </button>
+                            <button class="btn btn-sm btn-info" onclick="viewListPesanan('${r.id}')">
+                                <i class="fas fa-list"></i> List Pesanan
+                            </button>
+                            ${isActive ? `<button class="btn btn-sm btn-warning" onclick="editReservation('${r.id}')">
+                                <i class="fas fa-edit"></i> Edit Pesanan
+                            </button>` : ''}
+                            <button class="btn btn-sm btn-danger" onclick="deleteReservation('${r.id}')">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                            ${dpButton}
+                        </div>
+                    </div>
+                `;
+            }
+            
             if (sortedActiveReservations.length === 0) {
                 activeContainer.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-calendar-alt"></i>
-                        <h3>${searchActive ? 'Tidak ada hasil pencarian' : 'Belum ada reservasi aktif di Firebase'}</h3>
+                        <h3>${searchActive ? 'Tidak ada hasil pencarian' : 'Belum ada reservasi aktif'}</h3>
                         <p>${searchActive ? 'Coba kata kunci lain' : 'Pesanan yang disimpan untuk hari ini dan masa depan akan muncul di sini'}</p>
                     </div>
                 `;
             } else {
-                activeContainer.innerHTML = sortedActiveReservations.map(reservation => `
-                    <div class="reservation-item">
-                        <div class="reservation-header">
-                            <div class="reservation-name">${reservation.customerName}</div>
-                            <div class="reservation-date">${new Date(reservation.reservationDate).toLocaleDateString('id-ID')}</div>
-                        </div>
-                        <div class="reservation-total">
-                            <strong>${reservation.items.length} item</strong> - Total: Rp ${reservation.total.toLocaleString('id-ID')}
-                        </div>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-secondary" onclick="viewReservationInvoice('${reservation.id}')">
-                                <i class="fas fa-eye"></i> Lihat Invoice
-                            </button>
-                            <button class="btn btn-sm btn-info" onclick="viewListPesanan('${reservation.id}')">
-                                <i class="fas fa-list"></i> List Pesanan
-                            </button>
-                            <button class="btn btn-sm btn-warning" onclick="editReservation('${reservation.id}')">
-                                <i class="fas fa-edit"></i> Edit Pesanan
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteReservation('${reservation.id}')">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                activeContainer.innerHTML = sortedActiveReservations.map(r => renderReservationCard(r, true)).join('');
             }
             
-            // Display past reservations
             if (sortedPastReservations.length === 0) {
                 pastContainer.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-history"></i>
-                        <h3>${searchPast ? 'Tidak ada hasil pencarian' : 'Belum ada reservasi lama di Firebase'}</h3>
+                        <h3>${searchPast ? 'Tidak ada hasil pencarian' : 'Belum ada reservasi lama'}</h3>
                         <p>${searchPast ? 'Coba kata kunci lain' : 'Reservasi dengan tanggal yang sudah lewat akan muncul di sini'}</p>
                     </div>
                 `;
             } else {
-                pastContainer.innerHTML = sortedPastReservations.map(reservation => `
-                    <div class="reservation-item past-reservation-item">
-                        <div class="reservation-header">
-                            <div class="reservation-name">${reservation.customerName}</div>
-                            <div class="reservation-date">${new Date(reservation.reservationDate).toLocaleDateString('id-ID')}</div>
-                        </div>
-                        <div class="reservation-total">
-                            <strong>${reservation.items.length} item</strong> - Total: Rp ${reservation.total.toLocaleString('id-ID')}
-                        </div>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-secondary" onclick="viewReservationInvoice('${reservation.id}')">
-                                <i class="fas fa-eye"></i> Lihat Invoice
-                            </button>
-                            <button class="btn btn-sm btn-info" onclick="viewListPesanan('${reservation.id}')">
-                                <i class="fas fa-list"></i> List Pesanan
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteReservation('${reservation.id}')">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                pastContainer.innerHTML = sortedPastReservations.map(r => renderReservationCard(r, false)).join('');
             }
             
-            // Update counts (original, not filtered)
             updateReservationCounts();
         }
         
-        // Function to save order to Firebase
         function saveOrder() {
             if (!isOnline) {
                 showAlert('Anda sedang offline. Tidak dapat menyimpan ke Firebase.', 'danger');
@@ -2978,7 +3867,6 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Check if data is complete
             if (!currentOrder.customerName.trim()) {
                 showAlert('Harap isi nama pemesan terlebih dahulu!', 'danger');
                 document.getElementById('customerName').focus();
@@ -2996,34 +3884,28 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Generate invoice
             const invoiceText = generateInvoice();
             
-            // Display invoice in the UI
             document.getElementById('invoiceOutput').textContent = invoiceText;
             document.getElementById('invoiceSection').style.display = 'block';
             
-            // Create reservation object
             const reservation = {
                 customerName: currentOrder.customerName,
                 reservationDate: currentOrder.reservationDate,
                 orderDate: new Date().toISOString(),
                 items: currentOrder.items,
                 total: currentOrder.total,
+                tables: currentOrder.tables || [],
+                dpAmount: currentOrder.dpAmount || null,
+                dpMethod: currentOrder.dpMethod || null,
                 invoice: invoiceText
             };
             
-            // Check if we're updating an existing reservation
             if (currentOrder.id) {
-                // Update existing reservation in Firebase
                 db.collection('reservations').doc(currentOrder.id).update(reservation)
                     .then(() => {
                         showAlert('Pesanan berhasil diupdate di Firebase!', 'success');
-                        
-                        // Switch to reservations tab
                         document.querySelector('[data-tab="reservations"]').click();
-                        
-                        // Clear current order
                         clearOrderWithoutConfirm();
                     })
                     .catch((error) => {
@@ -3031,15 +3913,10 @@ Es Teh Manis,8000</pre>
                         showAlert('Gagal mengupdate pesanan di Firebase', 'danger');
                     });
             } else {
-                // Add new reservation to Firebase
                 db.collection('reservations').add(reservation)
                     .then(() => {
                         showAlert('Pesanan berhasil disimpan ke Firebase!', 'success');
-                        
-                        // Switch to reservations tab
                         document.querySelector('[data-tab="reservations"]').click();
-                        
-                        // Clear current order
                         clearOrderWithoutConfirm();
                     })
                     .catch((error) => {
@@ -3049,30 +3926,30 @@ Es Teh Manis,8000</pre>
             }
         }
         
-        // Function to clear current order tanpa konfirmasi
         function clearOrderWithoutConfirm() {
             currentOrder = {
                 id: null,
                 customerName: '',
                 reservationDate: '',
                 items: [],
-                total: 0
+                total: 0,
+                tables: [],
+                dpAmount: null,
+                dpMethod: null
             };
             
-            // Clear form fields
             document.getElementById('customerName').value = '';
             document.getElementById('reservationDate').value = '';
+            document.getElementById('selectedTablesDisplay').style.display = 'none';
             document.getElementById('searchMenuOrder').value = '';
             document.getElementById('itemQuantityOrder').value = 1;
             document.getElementById('itemNotesOrder').value = '';
             
-            // Update UI
             loadOrderItems();
             document.getElementById('invoiceSection').style.display = 'none';
             updateOrderActionButtons();
         }
         
-        // Function to clear current order (with confirmation)
         function clearOrder() {
             if (currentOrder.items.length > 0 && !confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
                 return;
@@ -3082,75 +3959,66 @@ Es Teh Manis,8000</pre>
             showAlert('Pesanan berhasil dihapus!', 'success');
         }
         
-        // Function to view reservation invoice in modal
         function viewReservationInvoice(id) {
             const reservation = reservations.find(r => r.id === id);
             if (!reservation) return;
             
-            // Display invoice in modal
             document.getElementById('modalInvoiceContent').textContent = reservation.invoice;
             document.getElementById('invoiceModal').style.display = 'flex';
             
-            // Set up copy button
             document.getElementById('copyModalInvoiceBtn').onclick = function() {
                 copyModalInvoiceToClipboard();
             };
         }
         
-        // Function to view list pesanan in modal
         function viewListPesanan(id) {
             const reservation = reservations.find(r => r.id === id);
             if (!reservation) return;
             
-            // Generate list pesanan
             const listText = generateListPesanan(reservation);
             
-            // Display list in modal
             document.getElementById('modalListPesananContent').textContent = listText;
             document.getElementById('listPesananModal').style.display = 'flex';
             
-            // Set up copy button
             document.getElementById('copyModalListPesananBtn').onclick = function() {
                 copyModalListPesananToClipboard();
             };
         }
         
-        // Function to edit a reservation from Firebase
         function editReservation(id) {
             const reservation = reservations.find(r => r.id === id);
             if (!reservation) return;
             
-            // Set current order to reservation data
             currentOrder = {
                 id: reservation.id,
                 customerName: reservation.customerName,
                 reservationDate: reservation.reservationDate,
-                items: reservation.items.map(item => ({...item})), // Deep copy
-                total: reservation.total
+                items: reservation.items.map(item => ({...item})),
+                total: reservation.total,
+                tables: reservation.tables || [],
+                dpAmount: reservation.dpAmount || null,
+                dpMethod: reservation.dpMethod || null
             };
             
-            // Update form fields
             document.getElementById('customerName').value = currentOrder.customerName;
             document.getElementById('reservationDate').value = currentOrder.reservationDate;
+            if (currentOrder.tables.length > 0) {
+                document.getElementById('selectedTablesList').textContent = currentOrder.tables.join(', ');
+                document.getElementById('selectedTablesDisplay').style.display = 'block';
+            }
             
-            // Update UI
             loadOrderItems();
             
-            // Generate and display invoice
             const invoiceText = generateInvoice();
             document.getElementById('invoiceOutput').textContent = invoiceText;
             document.getElementById('invoiceSection').style.display = 'block';
             
-            // Switch to order tab
             document.querySelector('[data-tab="order"]').click();
-            
-            // Scroll to top
             document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
             
             showAlert('Pesanan siap diedit. Lakukan perubahan lalu klik "Update Pesanan di Firebase".', 'info');
         }
         
-        // Function to delete a reservation from Firebase
         function deleteReservation(id) {
             if (!isOnline) {
                 showAlert('Anda sedang offline. Tidak dapat menghapus dari Firebase.', 'danger');
@@ -3177,8 +4045,6 @@ Es Teh Manis,8000</pre>
         }
         
         // ============ TAKEAWAY FUNCTIONS ============
-        
-        // Function to add an item to takeaway
         function addItemToTakeaway() {
             const searchInput = document.getElementById('searchMenuTakeaway');
             const quantityInput = document.getElementById('itemQuantityTakeaway');
@@ -3193,7 +4059,6 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Find the menu item by name
             const menuItem = menuItems.find(item => 
                 item.name.toLowerCase() === menuName.toLowerCase()
             );
@@ -3203,33 +4068,27 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Check if item already exists in takeaway
             const existingItemIndex = currentTakeaway.items.findIndex(item => item.id === menuItem.id && item.notes === notes);
             
             if (existingItemIndex !== -1) {
-                // Update quantity for item with same notes
                 currentTakeaway.items[existingItemIndex].quantity += quantity;
                 currentTakeaway.items[existingItemIndex].subtotal = 
                     currentTakeaway.items[existingItemIndex].quantity * currentTakeaway.items[existingItemIndex].price;
             } else {
-                // Add new item
                 currentTakeaway.items.push({
                     id: menuItem.id,
                     name: menuItem.name,
                     price: menuItem.price,
                     quantity: quantity,
                     notes: notes,
-                    subtotal: menuItem.price * quantity
+                    subtotal: menuItem.price * quantity,
+                    categories: menuItem.categories || []
                 });
             }
             
-            // Update total
             updateTakeawayTotal();
-            
-            // Update UI
             loadTakeawayItems();
             
-            // Reset form
             searchInput.value = '';
             document.getElementById('autocompleteListTakeaway').style.display = 'none';
             quantityInput.value = 1;
@@ -3239,7 +4098,6 @@ Es Teh Manis,8000</pre>
             showAlert('Item berhasil ditambahkan ke pesanan takeaway!', 'success');
         }
         
-        // Function to load and display takeaway items
         function loadTakeawayItems() {
             const container = document.getElementById('takeawayItemsContainer');
             const takeawayItemsCount = document.getElementById('takeawayItemsCount');
@@ -3288,7 +4146,6 @@ Es Teh Manis,8000</pre>
             takeawayItemsCount.textContent = currentTakeaway.items.length;
         }
         
-        // Function to change takeaway item quantity
         function changeTakeawayItemQuantity(index, change) {
             const newQuantity = currentTakeaway.items[index].quantity + change;
             
@@ -3304,13 +4161,12 @@ Es Teh Manis,8000</pre>
             loadTakeawayItems();
         }
         
-        // Function to update takeaway item quantity from input
         function updateTakeawayItemQuantity(index, newQuantity) {
             newQuantity = parseInt(newQuantity);
             
             if (isNaN(newQuantity) || newQuantity < 1) {
                 showAlert('Jumlah harus minimal 1!', 'danger');
-                loadTakeawayItems(); // Reset to original value
+                loadTakeawayItems();
                 return;
             }
             
@@ -3321,28 +4177,22 @@ Es Teh Manis,8000</pre>
             loadTakeawayItems();
         }
         
-        // Function to edit takeaway item
         function editTakeawayItem(index) {
             const item = currentTakeaway.items[index];
             
-            // Populate modal with item data
             document.getElementById('editItemMenu').value = item.name;
             document.getElementById('editItemQuantity').value = item.quantity;
             document.getElementById('editItemNotes').value = item.notes || '';
             document.getElementById('editItemPrice').textContent = `Rp ${item.price.toLocaleString('id-ID')}`;
             document.getElementById('editItemIndex').value = index;
             
-            // Set modal type untuk takeaway
             document.getElementById('editItemModal').setAttribute('data-type', 'takeaway');
             
-            // Calculate and display subtotal
             updateEditItemSubtotal();
             
-            // Show modal
             document.getElementById('editItemModal').style.display = 'flex';
         }
         
-        // Function to remove an item from takeaway
         function removeTakeawayItem(index) {
             if (!confirm('Apakah Anda yakin ingin menghapus item ini dari pesanan takeaway?')) {
                 return;
@@ -3354,14 +4204,12 @@ Es Teh Manis,8000</pre>
             showAlert('Item berhasil dihapus dari pesanan takeaway!', 'success');
         }
         
-        // Function to update takeaway total
         function updateTakeawayTotal() {
             currentTakeaway.total = currentTakeaway.items.reduce((sum, item) => sum + item.subtotal, 0);
             document.getElementById('takeawayTotal').textContent = currentTakeaway.total.toLocaleString('id-ID');
             updateTakeawayActionButtons();
         }
         
-        // Function to update takeaway action buttons state
         function updateTakeawayActionButtons() {
             const hasItems = currentTakeaway.items.length > 0;
             
@@ -3374,7 +4222,6 @@ Es Teh Manis,8000</pre>
             }
         }
         
-        // Function to generate takeaway invoice
         function generateTakeawayInvoice() {
             if (currentTakeaway.items.length === 0) {
                 showAlert('Tidak ada item dalam pesanan takeaway!', 'danger');
@@ -3394,7 +4241,6 @@ Es Teh Manis,8000</pre>
                 minute: '2-digit'
             });
             
-            // Generate invoice text
             let invoiceText = "Berikut rekapan pesanan takeaway:\n\n";
             
             if (currentTakeaway.customerName.trim()) {
@@ -3405,7 +4251,6 @@ Es Teh Manis,8000</pre>
             invoiceText += `Waktu : ${formattedTime}\n\n`;
             invoiceText += "Pesanan:\n";
             
-            // Format setiap item
             currentTakeaway.items.forEach((item) => {
                 const qty = item.quantity.toString().padStart(2);
                 let nameWithNotes = item.name;
@@ -3423,7 +4268,6 @@ Es Teh Manis,8000</pre>
             return invoiceText;
         }
         
-        // Function to save takeaway order to Firebase
         function saveTakeaway() {
             if (!isOnline) {
                 showAlert('Anda sedang offline. Tidak dapat menyimpan ke Firebase.', 'danger');
@@ -3440,10 +4284,8 @@ Es Teh Manis,8000</pre>
                 return;
             }
             
-            // Generate invoice
             const invoiceText = generateTakeawayInvoice();
             
-            // Create takeaway object
             const takeaway = {
                 customerName: currentTakeaway.customerName || 'Tidak ada nama',
                 orderDate: new Date().toISOString(),
@@ -3452,17 +4294,11 @@ Es Teh Manis,8000</pre>
                 invoice: invoiceText
             };
             
-            // Check if we're updating an existing takeaway
             if (currentTakeaway.id) {
-                // Update existing takeaway in Firebase
                 db.collection('takeaway').doc(currentTakeaway.id).update(takeaway)
                     .then(() => {
                         showAlert('Pesanan takeaway berhasil diupdate di Firebase!', 'success');
-                        
-                        // Switch to takeaway list tab
                         document.querySelector('[data-tab="list-takeaway"]').click();
-                        
-                        // Clear current takeaway
                         clearTakeawayWithoutConfirm();
                     })
                     .catch((error) => {
@@ -3470,15 +4306,10 @@ Es Teh Manis,8000</pre>
                         showAlert('Gagal mengupdate pesanan takeaway di Firebase', 'danger');
                     });
             } else {
-                // Add new takeaway to Firebase
                 db.collection('takeaway').add(takeaway)
                     .then(() => {
                         showAlert('Pesanan takeaway berhasil disimpan ke Firebase!', 'success');
-                        
-                        // Switch to takeaway list tab
                         document.querySelector('[data-tab="list-takeaway"]').click();
-                        
-                        // Clear current takeaway
                         clearTakeawayWithoutConfirm();
                     })
                     .catch((error) => {
@@ -3488,7 +4319,6 @@ Es Teh Manis,8000</pre>
             }
         }
         
-        // Function to clear current takeaway tanpa konfirmasi
         function clearTakeawayWithoutConfirm() {
             currentTakeaway = {
                 id: null,
@@ -3497,31 +4327,25 @@ Es Teh Manis,8000</pre>
                 total: 0
             };
             
-            // Clear form fields
             document.getElementById('customerNameTakeaway').value = '';
             document.getElementById('searchMenuTakeaway').value = '';
             document.getElementById('itemQuantityTakeaway').value = 1;
             document.getElementById('itemNotesTakeaway').value = '';
             
-            // Update UI
             loadTakeawayItems();
             updateTakeawayActionButtons();
         }
         
-        // Function to load and display takeaway list from Firebase (with search filter)
         function loadTakeawayList() {
             const container = document.getElementById('takeawayListContainer');
             
-            // NEW: Get search value
             const search = document.getElementById('searchTakeaway')?.value.toLowerCase() || '';
             
-            // Filter by search
             let filtered = takeawayOrders;
             if (search) {
                 filtered = filtered.filter(o => o.customerName.toLowerCase().includes(search));
             }
             
-            // Sort takeaway orders by date (newest first)
             const sortedTakeawayOrders = [...filtered].sort((a, b) => 
                 new Date(b.orderDate) - new Date(a.orderDate)
             );
@@ -3572,54 +4396,42 @@ Es Teh Manis,8000</pre>
                 `;
             }).join('');
             
-            // Update count (original, not filtered)
             updateTakeawayListCount();
         }
         
-        // Function to view takeaway invoice in modal
         function viewTakeawayInvoice(id) {
             const takeaway = takeawayOrders.find(t => t.id === id);
             if (!takeaway) return;
             
-            // Display invoice in modal
             document.getElementById('modalInvoiceContent').textContent = takeaway.invoice;
             document.getElementById('invoiceModal').style.display = 'flex';
             
-            // Set up copy button
             document.getElementById('copyModalInvoiceBtn').onclick = function() {
                 copyModalInvoiceToClipboard();
             };
         }
         
-        // Function to edit a takeaway order from Firebase
         function editTakeawayOrder(id) {
             const takeaway = takeawayOrders.find(t => t.id === id);
             if (!takeaway) return;
             
-            // Set current takeaway to order data
             currentTakeaway = {
                 id: takeaway.id,
                 customerName: takeaway.customerName,
-                items: takeaway.items.map(item => ({...item})), // Deep copy
+                items: takeaway.items.map(item => ({...item})),
                 total: takeaway.total
             };
             
-            // Update form fields
             document.getElementById('customerNameTakeaway').value = currentTakeaway.customerName;
             
-            // Update UI
             loadTakeawayItems();
             
-            // Switch to takeaway tab
             document.querySelector('[data-tab="takeaway"]').click();
-            
-            // Scroll to top
             document.getElementById('takeaway').scrollIntoView({ behavior: 'smooth' });
             
             showAlert('Pesanan takeaway siap diedit. Lakukan perubahan lalu klik "Update Pesanan Takeaway di Firebase".', 'info');
         }
         
-        // Function to delete a takeaway order from Firebase
         function deleteTakeawayOrder(id) {
             if (!isOnline) {
                 showAlert('Anda sedang offline. Tidak dapat menghapus dari Firebase.', 'danger');
@@ -3645,7 +4457,498 @@ Es Teh Manis,8000</pre>
                 });
         }
         
-        // Function to show alert
+        // ============ LAPORAN HARIAN (hanya reservasi dengan DP) ============
+        function generateDailyReport() {
+            const reportDate = document.getElementById('reportDate').value;
+            const sortBy = document.getElementById('reportSort').value;
+            
+            if (!reportDate) {
+                showAlert('Harap pilih tanggal terlebih dahulu!', 'danger');
+                return;
+            }
+            
+            const reservationsWithDp = reservations.filter(r => r.reservationDate === reportDate && r.dpAmount != null);
+            
+            if (reservationsWithDp.length === 0) {
+                document.getElementById('reportResult').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Tidak ada pesanan dengan DP pada tanggal ${new Date(reportDate).toLocaleDateString('id-ID')}</h3>
+                    </div>
+                `;
+                return;
+            }
+            
+            const menuMap = {};
+            menuItems.forEach(menu => { menuMap[menu.name] = menu; });
+            
+            const menuTotals = {};
+            const categoryTotals = {};
+            
+            reservationsWithDp.forEach(res => {
+                res.items.forEach(item => {
+                    const menuName = item.name;
+                    if (!menuTotals[menuName]) menuTotals[menuName] = 0;
+                    menuTotals[menuName] += item.quantity;
+                    
+                    const menu = menuMap[menuName];
+                    if (menu && menu.categories) {
+                        menu.categories.forEach(cat => {
+                            if (!categoryTotals[cat.id]) {
+                                categoryTotals[cat.id] = { name: cat.name, total: 0, items: {} };
+                            }
+                            if (!categoryTotals[cat.id].items[menuName]) {
+                                categoryTotals[cat.id].items[menuName] = 0;
+                            }
+                            categoryTotals[cat.id].items[menuName] += item.quantity;
+                            categoryTotals[cat.id].total += item.quantity;
+                        });
+                    }
+                });
+            });
+            
+            let reportData = Object.keys(menuTotals).map(menu => ({ menu, total: menuTotals[menu] }));
+            
+            if (sortBy === 'most') reportData.sort((a,b) => b.total - a.total);
+            else if (sortBy === 'least') reportData.sort((a,b) => a.total - b.total);
+            else reportData.sort((a,b) => a.menu.localeCompare(b.menu));
+            
+            const grandTotal = reportData.reduce((sum, item) => sum + item.total, 0);
+            
+            let html = `<h3 style="margin-bottom: 15px;">Laporan Tanggal ${new Date(reportDate).toLocaleDateString('id-ID')} (Reservasi dengan DP)</h3>`;
+            
+            // Kategori
+            if (Object.keys(categoryTotals).length > 0) {
+                html += `<h4 style="margin-top: 20px;">Per Kategori</h4>`;
+                Object.values(categoryTotals).sort((a,b) => a.name.localeCompare(b.name)).forEach(cat => {
+                    html += `
+                        <div class="category-card">
+                            <div class="category-title">${cat.name}</div>
+                            <div class="category-total">Total: ${cat.total} porsi</div>
+                            <div class="category-items">
+                    `;
+                    Object.keys(cat.items).sort().forEach(menu => {
+                        html += `
+                            <div class="category-item-detail">
+                                <span class="category-item-name" style="cursor:pointer;" onclick="showMenuDetail('${menu}', '${reportDate}')">${menu}</span>
+                                <span class="category-item-qty">${cat.items[menu]}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div></div>`;
+                });
+            } else {
+                html += `<p>Tidak ada kategori untuk pesanan hari ini.</p>`;
+            }
+            
+            // Tabel menu
+            html += `
+                <h4 style="margin-top: 30px;">Detail Per Menu</h4>
+                <table class="report-table">
+                    <thead><tr><th>No</th><th>Nama Menu</th><th>Total Porsi</th></tr></thead>
+                    <tbody>
+            `;
+            reportData.forEach((item, index) => {
+                html += `<tr><td>${index+1}</td><td>${item.menu}</td><td>${item.total}</td></tr>`;
+            });
+            html += `</tbody></table><div class="report-total">Total Porsi: ${grandTotal}</div>`;
+            
+            document.getElementById('reportResult').innerHTML = html;
+        }
+        
+        // ============ DETAIL MENU PER MEJA ============
+        window.showMenuDetail = function(menuName, reportDate) {
+            const reservationsWithDp = reservations.filter(r => r.reservationDate === reportDate && r.dpAmount != null);
+            const items = [];
+            reservationsWithDp.forEach(res => {
+                res.items.forEach(item => {
+                    if (item.name === menuName) {
+                        items.push({
+                            customer: res.customerName,
+                            tables: res.tables || [],
+                            quantity: item.quantity
+                        });
+                    }
+                });
+            });
+            
+            let totalQty = items.reduce((sum, i) => sum + i.quantity, 0);
+            let detailHtml = `<p><strong>Total porsi:</strong> ${totalQty}</p>`;
+            if (items.length === 0) {
+                detailHtml += '<p>Tidak ada data.</p>';
+            } else {
+                detailHtml += '<ul>';
+                items.forEach(item => {
+                    const tables = item.tables.length ? item.tables.join(', ') : '(tanpa meja)';
+                    detailHtml += `<li>Meja ${tables} (${item.customer}) : ${item.quantity} porsi</li>`;
+                });
+                detailHtml += '</ul>';
+            }
+            
+            document.getElementById('menuDetailTitle').innerText = menuName;
+            document.getElementById('menuDetailContent').innerHTML = detailHtml;
+            document.getElementById('menuDetailModal').style.display = 'flex';
+        };
+        
+        // ============ FUNGSI MANAJEMEN MEJA ============
+        
+        function loadTables() {
+            if (!auth.currentUser) return;
+            db.collection('tables').orderBy('number').get()
+                .then(snapshot => {
+                    tables = [];
+                    snapshot.forEach(doc => {
+                        tables.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderTablesList();
+                })
+                .catch(error => {
+                    console.error('Error loading tables:', error);
+                    showAlert('Gagal memuat data meja', 'danger');
+                });
+        }
+        
+        function renderTablesList() {
+            const container = document.getElementById('tablesListContainer');
+            if (tables.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-chair"></i><h3>Belum ada meja</h3><p>Tambahkan meja menggunakan tombol di atas</p></div>';
+                return;
+            }
+            
+            let html = '';
+            tables.sort((a, b) => a.number.localeCompare(b.number, undefined, {numeric: true})).forEach(table => {
+                const areaLabels = { non: 'Non Smoking', smoking: 'Smoking', tambahan: 'Tambahan' };
+                html += `
+                    <div class="table-item" data-id="${table.id}">
+                        <span class="table-number">Meja ${table.number}</span>
+                        <select class="form-control area-dropdown" onchange="updateTableArea('${table.id}', this.value)">
+                            <option value="non" ${table.area === 'non' ? 'selected' : ''}>Non Smoking</option>
+                            <option value="smoking" ${table.area === 'smoking' ? 'selected' : ''}>Smoking</option>
+                            <option value="tambahan" ${table.area === 'tambahan' ? 'selected' : ''}>Tambahan</option>
+                        </select>
+                        <div class="table-actions">
+                            <button class="btn btn-sm btn-danger" onclick="deleteTable('${table.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+        
+        window.updateTableArea = function(tableId, newArea) {
+            if (!isOnline) {
+                showAlert('Anda sedang offline. Tidak dapat mengupdate area meja.', 'danger');
+                return;
+            }
+            db.collection('tables').doc(tableId).update({ area: newArea })
+                .then(() => showAlert('Area meja berhasil diupdate', 'success'))
+                .catch(err => {
+                    console.error(err);
+                    showAlert('Gagal mengupdate area', 'danger');
+                });
+        };
+        
+        window.deleteTable = function(tableId) {
+            if (!isOnline) {
+                showAlert('Anda sedang offline. Tidak dapat menghapus meja.', 'danger');
+                return;
+            }
+            if (!confirm('Hapus meja ini?')) return;
+            db.collection('tables').doc(tableId).delete()
+                .then(() => showAlert('Meja dihapus', 'success'))
+                .catch(err => {
+                    console.error(err);
+                    showAlert('Gagal menghapus meja', 'danger');
+                });
+        };
+        
+        function addTable() {
+            const number = document.getElementById('newTableNumber').value.trim();
+            const area = document.getElementById('newTableArea').value;
+            if (!number) {
+                showAlert('Nomor meja harus diisi', 'danger');
+                return;
+            }
+            if (tables.some(t => t.number === number)) {
+                showAlert('Nomor meja sudah ada', 'warning');
+                return;
+            }
+            db.collection('tables').add({ number, area })
+                .then(() => {
+                    showAlert('Meja berhasil ditambahkan', 'success');
+                    document.getElementById('addTableModal').style.display = 'none';
+                    document.getElementById('newTableNumber').value = '';
+                })
+                .catch(err => {
+                    console.error(err);
+                    showAlert('Gagal menambah meja', 'danger');
+                });
+        }
+        
+        function importTablesFromCSV() {
+            const csvText = document.getElementById('importTableCsvText').value.trim();
+            if (!csvText) {
+                showAlert('Harap masukkan data CSV', 'warning');
+                return;
+            }
+            
+            const lines = csvText.split('\n');
+            const batch = db.batch();
+            let addedCount = 0;
+            
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+                const parts = line.split(',');
+                if (parts.length < 2) return;
+                const number = parts[0].trim();
+                const area = parts[1].trim().toLowerCase();
+                if (!number || !['non', 'smoking', 'tambahan'].includes(area)) return;
+                
+                if (tables.some(t => t.number === number)) return;
+                
+                const newRef = db.collection('tables').doc();
+                batch.set(newRef, { number, area });
+                addedCount++;
+            });
+            
+            if (addedCount === 0) {
+                showAlert('Tidak ada data valid yang ditambahkan (mungkin duplikat)', 'warning');
+                return;
+            }
+            
+            batch.commit()
+                .then(() => {
+                    showAlert(`Berhasil menambahkan ${addedCount} meja`, 'success');
+                    document.getElementById('importTableCsvModal').style.display = 'none';
+                    document.getElementById('importTableCsvText').value = '';
+                })
+                .catch(err => {
+                    console.error(err);
+                    showAlert('Gagal import meja', 'danger');
+                });
+        }
+        
+        // ============ FUNGSI PEMILIHAN MEJA ============
+        
+        function openSelectTableModal() {
+            if (!currentOrder.reservationDate) {
+                showAlert('Harap pilih tanggal reservasi terlebih dahulu', 'danger');
+                return;
+            }
+            
+            db.collection('tables').get().then(snapshot => {
+                tables = [];
+                snapshot.forEach(doc => tables.push({ id: doc.id, ...doc.data() }));
+                
+                db.collection('reservations').where('reservationDate', '==', currentOrder.reservationDate).get()
+                    .then(resSnapshot => {
+                        const occupiedTables = [];
+                        resSnapshot.forEach(doc => {
+                            const data = doc.data();
+                            if (data.tables && Array.isArray(data.tables)) {
+                                occupiedTables.push(...data.tables);
+                            }
+                        });
+                        
+                        renderTableSelection(occupiedTables);
+                        document.getElementById('selectTableModal').style.display = 'flex';
+                    });
+            });
+        }
+        
+        function renderTableSelection(occupiedTables) {
+            const container = document.getElementById('tableSelectionContainer');
+            const areaGroups = { non: [], smoking: [], tambahan: [] };
+            tables.forEach(t => areaGroups[t.area].push(t));
+            
+            let html = '';
+            const areaNames = { non: 'Non Smoking', smoking: 'Smoking', tambahan: 'Tambahan' };
+            const colors = { non: '#3498db', smoking: '#e74c3c', tambahan: '#f39c12' };
+            
+            Object.keys(areaGroups).forEach(area => {
+                if (areaGroups[area].length === 0) return;
+                html += `<h4 style="margin: 15px 0 5px; color: ${colors[area]};">${areaNames[area]}</h4>`;
+                html += '<div class="tables-grid">';
+                areaGroups[area].sort((a,b) => a.number.localeCompare(b.number, undefined, {numeric: true})).forEach(t => {
+                    const isOccupied = occupiedTables.includes(t.number);
+                    const isSelected = currentOrder.tables && currentOrder.tables.includes(t.number);
+                    const selectedClass = isSelected ? 'selected' : '';
+                    const occupiedClass = isOccupied ? 'occupied' : '';
+                    const areaClass = `area-${t.area}`;
+                    html += `
+                        <div class="table-card ${areaClass} ${occupiedClass} ${selectedClass}" 
+                             data-number="${t.number}" 
+                             onclick="toggleTableSelection('${t.number}', ${isOccupied})">
+                            ${t.number}
+                            <span class="area-label">${areaNames[area]}</span>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        window.toggleTableSelection = function(tableNumber, isOccupied) {
+            if (isOccupied) return;
+            
+            if (!currentOrder.tables) currentOrder.tables = [];
+            const index = currentOrder.tables.indexOf(tableNumber);
+            if (index === -1) {
+                currentOrder.tables.push(tableNumber);
+            } else {
+                currentOrder.tables.splice(index, 1);
+            }
+            
+            const cards = document.querySelectorAll('#tableSelectionContainer .table-card');
+            cards.forEach(card => {
+                if (card.dataset.number === tableNumber) {
+                    card.classList.toggle('selected');
+                }
+            });
+        };
+        
+        function confirmSelectTables() {
+            if (currentOrder.tables && currentOrder.tables.length > 0) {
+                document.getElementById('selectedTablesList').textContent = currentOrder.tables.join(', ');
+                document.getElementById('selectedTablesDisplay').style.display = 'block';
+            } else {
+                document.getElementById('selectedTablesDisplay').style.display = 'none';
+            }
+            document.getElementById('selectTableModal').style.display = 'none';
+        }
+        
+        // ============ FUNGSI DP ============
+        
+        window.openAddDpModal = function(reservationId) {
+            document.getElementById('dpReservationId').value = reservationId;
+            document.getElementById('dpAmount').value = '';
+            document.getElementById('dpMethod').value = 'Cash';
+            document.getElementById('addDpModal').style.display = 'flex';
+        };
+        
+        function saveDp() {
+            const reservationId = document.getElementById('dpReservationId').value;
+            const amount = parseFloat(document.getElementById('dpAmount').value.replace(/\./g, ''));
+            const method = document.getElementById('dpMethod').value;
+            
+            if (!amount || amount <= 0) {
+                showAlert('Nominal DP harus valid', 'danger');
+                return;
+            }
+            
+            db.collection('reservations').doc(reservationId).update({
+                dpAmount: amount,
+                dpMethod: method
+            })
+            .then(() => {
+                showAlert('DP berhasil disimpan', 'success');
+                document.getElementById('addDpModal').style.display = 'none';
+            })
+            .catch(err => {
+                console.error(err);
+                showAlert('Gagal menyimpan DP', 'danger');
+            });
+        }
+        
+        window.formatRupiah = function(element) {
+            let val = element.value.replace(/[^,\d]/g, '').toString();
+            if (val) {
+                val = parseInt(val).toLocaleString('id-ID');
+                element.value = val;
+            }
+        };
+        
+        // ============ CEK KETERSEDIAAN MEJA ============
+        function checkTableAvailability() {
+            const date = document.getElementById('checkDate').value;
+            if (!date) { showAlert('Pilih tanggal', 'danger'); return; }
+            
+            Promise.all([
+                db.collection('tables').get(),
+                db.collection('reservations').where('reservationDate', '==', date).get()
+            ]).then(([tablesSnap, reservationsSnap]) => {
+                const allTables = [];
+                tablesSnap.forEach(doc => allTables.push({ id: doc.id, ...doc.data() }));
+                
+                const occupiedTables = [];
+                reservationsSnap.forEach(doc => {
+                    const data = doc.data();
+                    if (data.tables) occupiedTables.push(...data.tables);
+                });
+                
+                const areaGroups = { non: [], smoking: [], tambahan: [] };
+                allTables.forEach(t => areaGroups[t.area].push(t));
+                
+                let html = `<h3>Ketersediaan Meja Tanggal ${new Date(date).toLocaleDateString('id-ID')}</h3>`;
+                const areaNames = { non: 'Non Smoking', smoking: 'Smoking', tambahan: 'Tambahan' };
+                
+                Object.keys(areaGroups).forEach(area => {
+                    if (areaGroups[area].length === 0) return;
+                    html += `<h4 style="margin-top:15px;">${areaNames[area]}</h4>`;
+                    html += '<div class="tables-grid">';
+                    areaGroups[area].sort((a,b) => a.number.localeCompare(b.number, undefined, {numeric: true})).forEach(t => {
+                        const isOccupied = occupiedTables.includes(t.number);
+                        const statusClass = isOccupied ? 'occupied' : 'available';
+                        const onclick = isOccupied 
+                            ? `showReservationForTable('${t.number}', '${date}')` 
+                            : `createReservationFromTable('${t.number}', '${date}')`;
+                        html += `<div class="table-card ${statusClass}" onclick="${onclick}">${t.number}</div>`;
+                    });
+                    html += '</div>';
+                });
+                
+                document.getElementById('availabilityResult').innerHTML = html;
+            }).catch(err => {
+                console.error(err);
+                showAlert('Gagal memuat data', 'danger');
+            });
+        }
+        
+        window.createReservationFromTable = function(tableNumber, date) {
+            if (!confirm(`Buat reservasi baru untuk Meja ${tableNumber} pada tanggal ${new Date(date).toLocaleDateString('id-ID')}?`)) return;
+            
+            clearOrderWithoutConfirm();
+            currentOrder.reservationDate = date;
+            currentOrder.tables = [tableNumber];
+            document.getElementById('reservationDate').value = date;
+            document.getElementById('selectedTablesList').textContent = tableNumber;
+            document.getElementById('selectedTablesDisplay').style.display = 'block';
+            
+            document.querySelector('[data-tab="order"]').click();
+            showAlert('Silakan isi pesanan', 'info');
+        };
+        
+        window.showReservationForTable = function(tableNumber, date) {
+            const reservation = reservations.find(r => r.reservationDate === date && r.tables && r.tables.includes(tableNumber));
+            if (!reservation) {
+                showAlert('Data reservasi tidak ditemukan', 'danger');
+                return;
+            }
+            
+            const tablesText = reservation.tables ? reservation.tables.join(', ') : '';
+            const dpText = reservation.dpAmount ? `Rp ${reservation.dpAmount.toLocaleString('id-ID')} (${reservation.dpMethod})` : 'Belum ada DP';
+            const itemsList = reservation.items.map(item => `${item.name} x${item.quantity}`).join('<br>');
+            
+            const content = `
+                <p><strong>Nama:</strong> ${reservation.customerName}</p>
+                <p><strong>Tanggal:</strong> ${new Date(reservation.reservationDate).toLocaleDateString('id-ID')}</p>
+                <p><strong>Meja:</strong> ${tablesText}</p>
+                <p><strong>Total item:</strong> ${reservation.items.length}</p>
+                <p><strong>Total:</strong> Rp ${reservation.total.toLocaleString('id-ID')}</p>
+                <p><strong>DP:</strong> ${dpText}</p>
+                <p><strong>Pesanan:</strong><br>${itemsList}</p>
+            `;
+            
+            document.getElementById('reservationDetailContent').innerHTML = content;
+            document.getElementById('reservationDetailModal').style.display = 'flex';
+        };
+        
+        // ============ ALERT FUNCTION ============
         function showAlert(message, type) {
             const alertContainer = document.getElementById('alertContainer');
             
@@ -3660,7 +4963,6 @@ Es Teh Manis,8000</pre>
             
             alertContainer.appendChild(alertDiv);
             
-            // Remove alert after 3 seconds
             setTimeout(() => {
                 alertDiv.style.opacity = '0';
                 alertDiv.style.transition = 'opacity 0.5s';
