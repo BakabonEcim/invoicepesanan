@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Semua CSS sama seperti sebelumnya */
+        /* ... CSS tetap sama seperti sebelumnya ... */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -4642,7 +4642,7 @@ Es Teh Manis,8000</pre>
             document.getElementById('reportResult').innerHTML = html;
         }
         
-        // ============ DETAIL MENU PER MEJA (dengan urutan berdasarkan DP) ============
+        // ============ DETAIL MENU PER MEJA (dengan urutan berdasarkan DP) - MODIFIED ============
         window.showMenuDetail = function(menuName, reportDate) {
             const reservationsWithDp = reservations.filter(r => r.reservationDate === reportDate && r.dpAmount != null);
             const items = [];
@@ -4698,7 +4698,8 @@ Es Teh Manis,8000</pre>
                 for (let [tables, group] of sortedGroups) {
                     detailHtml += `<div style="margin-top:10px;"><strong>Meja ${tables} : ${group.total} porsi</strong>`;
                     group.details.forEach(d => {
-                        detailHtml += `<div style="margin-left:20px;">${d.customer} - DP ke-${d.dpOrder} : ${d.quantity} porsi</div>`;
+                        // MODIFIED: Hapus jumlah porsi di baris detail
+                        detailHtml += `<div style="margin-left:20px;">${d.customer} - DP ke-${d.dpOrder}</div>`;
                     });
                     detailHtml += `</div>`;
                 }
